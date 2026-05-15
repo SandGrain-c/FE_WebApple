@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#717375",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e4e2e4",
+                        "surface-bright": "#fcf8fb",
+                        "on-tertiary-container": "#f9f9fb",
+                        "surface-variant": "#e4e2e4",
+                        "surface": "#fcf8fb",
+                        "secondary": "#5e5e5e",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "inverse-on-surface": "#f3f0f2",
+                        "on-secondary-container": "#646464",
+                        "secondary-container": "#e2e2e2",
+                        "on-primary-container": "#fff8f7",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "primary-fixed": "#ffdad7",
+                        "surface-dim": "#dcd9dc",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "on-secondary-fixed": "#1b1b1b",
+                        "on-primary-fixed-variant": "#930014",
+                        "primary-container": "#e60026",
+                        "on-background": "#1b1b1d",
+                        "secondary-fixed": "#e2e2e2",
+                        "surface-container-high": "#eae7ea",
+                        "background": "#fcf8fb",
+                        "surface-tint": "#c0001e",
+                        "tertiary-fixed": "#e2e2e4",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb3ae",
+                        "tertiary": "#595a5c",
+                        "on-secondary-fixed-variant": "#474747",
+                        "inverse-primary": "#ffb3ae",
+                        "outline": "#936e6b",
+                        "on-primary-fixed": "#410004",
+                        "outline-variant": "#e8bcb8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#5e3f3c",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary": "#b7001c",
+                        "secondary-fixed-dim": "#c6c6c6",
+                        "surface-container": "#f0edef",
+                        "on-surface": "#1b1b1d",
+                        "inverse-surface": "#303032",
+                        "surface-container-low": "#f6f3f5",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "container-max": "1200px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-xl": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcf8fb;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-100 dark:border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-gray-600 md:hidden">menu</span>
+<span class="text-xl font-bold tracking-tighter text-[#E60026] dark:text-[#FF1A3D]">Đức Bách Hoá</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#E60026] dark:text-[#FF1A3D] border-b-2 border-[#E60026] pb-1 font-label-md text-label-md" href="#">iPhone</a>
+<a class="text-gray-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-opacity duration-300 font-label-md text-label-md" href="#">iPad</a>
+<a class="text-gray-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-opacity duration-300 font-label-md text-label-md" href="#">Mac</a>
+<a class="text-gray-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-opacity duration-300 font-label-md text-label-md" href="#">Phụ kiện</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2 gap-2">
+<span class="material-symbols-outlined text-gray-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-40 placeholder:text-gray-400" placeholder="Tìm kiếm sản phẩm..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-gray-600 cursor-pointer">shopping_cart</span>
+<span class="material-symbols-outlined text-gray-600 cursor-pointer">person</span>
+<button class="hidden sm:block bg-[#E60026] text-white px-4 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-wider active:scale-95 transition-transform duration-200">Hot deal</button>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="bg-white py-xl overflow-hidden">
+<div class="max-w-[1200px] mx-auto px-6 text-center">
+<h1 class="font-display-lg text-[60px] leading-[1] text-on-surface mb-6 tracking-tighter max-w-4xl mx-auto">iPhone Chính Hãng – Giá Tốt Mỗi Ngày</h1>
+<p class="font-body-lg text-body-lg text-secondary mb-10">Bảo hành 12 tháng – Giao nhanh toàn quốc</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4 mb-xl">
+<button class="bg-[#E60026] text-white px-8 py-4 rounded-full font-label-md text-label-md hover:opacity-80 transition-opacity">Mua ngay</button>
+<button class="border border-gray-300 text-on-surface px-8 py-4 rounded-full font-label-md text-label-md hover:bg-gray-50 transition-colors">Xem sản phẩm</button>
+</div>
+<div class="relative max-w-5xl mx-auto">
+<img alt="iPhone Collection" class="w-full object-contain transform scale-110" data-alt="A pristine, high-resolution studio photograph of multiple flagship iPhone models arranged symmetrically on a clean, white reflective surface. The lighting is soft and professional, highlighting the metallic edges and glass finishes in a minimalist environment. The aesthetic is ultra-modern and premium, dominated by whites and soft grays with vibrant screen colors, embodying an essentialist luxury style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaLQbIvEJo5lKaQimmEKtgXk5hXuf3SconrnsbmknPs2jWmufJB8wdo11UAPjgVOZ8S-7V_s2_PlUCe-RzJxVFtS3RNxSv7t_sez8rbZm8lXdgsHf1eqV8JDPampdiwyp0cIDSpmgCmNLLNU2KLXl_cta3Y0j9H_MLIzk2tWpsEnXbkymFnppKkn_GSrNGdTG3piJm_udPMu5VKey4ZI_mCPjGPTeUoFls-ir5_f-8cizJ2gHWIRSJVJiCp-DzMC_toKf4ShyDFSHq"/>
+</div>
+</div>
+</section>
+<!-- Category Grid -->
+<section class="max-w-[1200px] mx-auto px-6 mt-xl">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-md">
+<div class="bg-white p-6 rounded-xl text-center group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300">
+<img alt="iPhone" class="w-24 h-24 mx-auto object-contain mb-4 group-hover:scale-110 transition-transform" data-alt="A minimalist product shot of a sleek iPhone featuring a deep black finish against a soft gray background. The lighting is subtle and atmospheric, emphasizing the clean lines and premium materials of the device. The composition is centered and calm, adhering to a modern industrial design language with high-end photographic quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8DqBQNUnqh8C5Lpv6o7lICWrIrjc6RfCbxOsKQp8XnvG0LS_O8i5zab3oRN06yVKychGh5uMZNWMSHkfIfcjpqi81klvH5aavRGStHi-mZTBrlTY4V0YJoZpc8zifeL6-pOXd-ASIMIIC1bRj8hWxIKF2Zl1XtHHLOI-6OEpgHa6cskF3ZnZKFNDmaRNe5I9K_OdvnUinX09Fe46mNnlxNbOjNxhd_XTG3r2-KOKAzN6Hf_FDvDKXy6OMA790ZYPQq1miCUuCqCzt"/>
+<span class="font-label-md text-label-md">iPhone</span>
+</div>
+<div class="bg-white p-6 rounded-xl text-center group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300">
+<img alt="iPad" class="w-24 h-24 mx-auto object-contain mb-4 group-hover:scale-110 transition-transform" data-alt="A high-end professional product photo of an iPad Pro with its Pencil, displayed on a minimalist light gray surface. The scene is bright and airy with high-key lighting that creates soft, ethereal shadows. The overall mood is sophisticated and clean, focusing on technological perfection and premium quality within a spacious, white-themed layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArAHSBBSNYswUGme9pgHSUfHktn4fGC-g73NpOkQX9YByD8i3B644VbSSm5keShVKYDbeO5XP7XthfkfcfQOS8d4gQQx7k_DmuEUVD0UcZSWFnfBkcFbUCjtvFFtQKa4KM1zOvwwMRV5_nuXzM2IUm58Ng0mD5PZE9ZM_APTCUeUBkOvpN1L3fVaJQHoCYEuGEmnt6KXA8O9gUtaO3-X2ns34N-fQkHn8yLg2PD7u0FCAoKhT9h1wizjIAwcNdAwScLkgjWFcax_6w"/>
+<span class="font-label-md text-label-md">iPad</span>
+</div>
+<div class="bg-white p-6 rounded-xl text-center group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300">
+<img alt="MacBook" class="w-24 h-24 mx-auto object-contain mb-4 group-hover:scale-110 transition-transform" data-alt="A studio shot of a sleek MacBook Air in silver, slightly open to show its thin profile. The background is a consistent, clean light gray that complements the metallic finish of the laptop. The lighting is diffused and professional, highlighting the premium craftsmanship and essentialist luxury aesthetic of the hardware." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU32NbfJkcdozAISHHTnfbveLIDNXi_do1WaSiDGZBAbrV5nxHzhM_AtZ6pqiZy2pI4QiF4OGVSu8LMZVSkFrKnapSw83YjLjUnWv-WDDkpFVhjQJHmwBp6_P3GEH-k3lhwC9AyuHToHxMA2vs4dL4sftUbYKY2NeqALPdTtxs_qXeU6rYYi4Iwb1b6nXblqL3Byh0ER4HnkPOS7AhoXstw3vo6D7BPFWCZ_EAQAracId-0rzbXTlLX7gS6U0sObUuJI-sabBN5-hI"/>
+<span class="font-label-md text-label-md">MacBook</span>
+</div>
+<div class="bg-white p-6 rounded-xl text-center group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300">
+<img alt="Apple Watch" class="w-24 h-24 mx-auto object-contain mb-4 group-hover:scale-110 transition-transform" data-alt="An Apple Watch with a clean white band displayed against a pristine white background. The image is captured with sharp focus and high contrast, using soft professional lighting to create a luxurious, tactile feel. The minimalist presentation emphasizes the watch's elegant design and modern engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF9-yCxwKf_GoOG2urjD_BNQWsb6cXqdujsAdKCOCpOwYZEYww8rHunHCH88ohu0-5280nSsfJadCDmegAX3bHp-8WAz-8BTsslAYGKFUfEEE-sQRRVDrXr7lq2hJc-1_1uzv9H1umyXudDbrBPZiHDf1ipX0ja_9nV_03OArQHRvMSAZ8_WktbahBUQ_7Hs4apn5x3F73_Rf_AUvrUKiX9w7OCcGBtP_xYoSGWhucINbtsUGrBW3jMZAGr00yD3f1ktvCe3v7jGEd"/>
+<span class="font-label-md text-label-md">Apple Watch</span>
+</div>
+<div class="bg-white p-6 rounded-xl text-center group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all duration-300">
+<img alt="Phụ kiện" class="w-24 h-24 mx-auto object-contain mb-4 group-hover:scale-110 transition-transform" data-alt="A collection of premium Apple accessories including AirPods and cases, neatly arranged on a high-quality light gray surface. The lighting is soft and even, highlighting the smooth white plastics and elegant forms. The composition follows a strict 8px rhythm and minimalist grid, evoking a sense of calm and professional reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMyoaaMOeXqT_fzgJhBSGztS-EBURxw09gNmUbwC_NZBH_xEKnnxtWzR7enkDtJ0W4OcdocuWhgv4BGD9Kt_8oiZD4QY6iY9WwZvYFQkrcHFvI2Tiz6mXYTKJWFhm2a0g5r_NJyMKdS6v-752aAfn0cImS5m4n1W8M2ThnS9Todvx4YzFngV7BQ32pY-FAYkOJ4zfV0OC6Lq4GERzNe_gxr4WnbB8SBdQ6Qb55M_iITrIVV8LBfBqtrkJ6NIUWCSrsgPA78kdI3Xk3"/>
+<span class="font-label-md text-label-md">Phụ kiện</span>
+</div>
+</div>
+</section>
+<!-- Best Sellers Grid -->
+<section class="max-w-[1200px] mx-auto px-6 mt-xl">
+<div class="flex items-center justify-between mb-lg">
+<h2 class="font-headline-xl text-headline-xl">Sản phẩm bán chạy</h2>
+<a class="text-[#E60026] font-label-md text-label-md flex items-center gap-1" href="#">Xem tất cả <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Product Card -->
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] group transition-all duration-300 hover:-translate-y-2">
+<div class="aspect-square overflow-hidden bg-[#F5F5F7] p-8">
+<img alt="iPhone 15 Pro Max" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" data-alt="A professional product portrait of an iPhone 15 Pro Max in Natural Titanium. The device is angled to catch soft, high-key studio lighting that emphasizes its brushed metal texture. The background is a clean, neutral white, following a premium minimalist aesthetic with no distractions, highlighting every detail of the high-end technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5lgBsNKDWii-GGex6sQJ9Ygu1tInBmB0Hi90VSNl_Hx6WoT7TyWyIkB5jh3UIPBkLJXBC6-hkFWi9_MPGBMRnuykVcHfRL5zXxat0sfK4QuvSt6By0BY1qI1GGArIXPKqFsEWC_ZdLTCk2usPbeZN5vFROBBbRzYLYTNFi1b5PyWFUR_IKrk-8Pa5T_JTP4PftHi6mRbds2BC8gWXk9r9j_EqApRaF1BLWIBKSkt4lc45YzAEKHQRs3E5-idf1LG4pkE9jiOG0Fje"/>
+</div>
+<div class="p-6">
+<h3 class="font-body-md text-body-md line-clamp-2 mb-2 group-hover:text-[#E60026] transition-colors">iPhone 15 Pro Max 256GB - Chính hãng VN/A</h3>
+<div class="flex items-baseline gap-3 mb-6">
+<span class="text-[#E60026] font-bold text-lg">29.990.000₫</span>
+<span class="text-gray-400 text-sm line-through">34.990.000₫</span>
+</div>
+<button class="w-full py-3 border border-gray-200 rounded-lg font-label-md text-label-md group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">Xem chi tiết</button>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] group transition-all duration-300 hover:-translate-y-2">
+<div class="aspect-square overflow-hidden bg-[#F5F5F7] p-8">
+<img alt="iPhone 15" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" data-alt="A detailed product shot of an iPhone 15 in a vibrant Pink finish, set against a soft, complementary pastel background. The lighting is bright and modern, creating a cheerful yet premium atmosphere. The image is crisp and clean, reflecting a professional reliability and high-resolution quality typical of flagship tech photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtflVF8uIWym47EIO8JU9kozCSjvQSD0PxMBDFa95iS2i7WlGynxXs511gLZ0sQ8i4szFdP6SAzSDUuU_bl8IA7SO2cMbxXxqilhqEDs0XIxxzVLV7EX5O4_neJqsSRZwW-ks4RfvaWA6erLKEJFZf1d-3P8JMm1jdHAb4W64NK5gxb2s9CwgdbJE1HWTUXMtJQ25cfCMy9izsCV5jmHET959Y41h7-tYQxU3lbSewmHChq1bNJbdZlOV1GI8_ED-IamfMvVuJ0T13"/>
+</div>
+<div class="p-6">
+<h3 class="font-body-md text-body-md line-clamp-2 mb-2 group-hover:text-[#E60026] transition-colors">iPhone 15 128GB - Chính hãng VN/A</h3>
+<div class="flex items-baseline gap-3 mb-6">
+<span class="text-[#E60026] font-bold text-lg">19.790.000₫</span>
+<span class="text-gray-400 text-sm line-through">22.990.000₫</span>
+</div>
+<button class="w-full py-3 border border-gray-200 rounded-lg font-label-md text-label-md group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">Xem chi tiết</button>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] group transition-all duration-300 hover:-translate-y-2">
+<div class="aspect-square overflow-hidden bg-[#F5F5F7] p-8">
+<img alt="MacBook Pro" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" data-alt="A minimalist studio photograph of a Space Gray MacBook Pro on a clean, light-colored wooden desk with a white wall behind it. The composition is balanced and serene, utilizing natural-looking but professional studio lighting. The scene highlights the slim design and elegant finish, embodying an 'it just works' ethos through pristine visual clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDspzBv_7vdRul7U10ZSqQpjAFFsuNpvB-zEKEphv2PDDbhtUK2khWfG3Nv5BejxuJbQq6NIlRTRAQfy9FFZmWPdGzZVUE8Oq2KwbkdbAgrn88wIW0CykQMvXJ651C4MV43dM341CVVZr0KF0CQdTJ6CNJrRvXFVLPmNaNsHpofsOoBMqDUn-ppD6EOV3QIoTbVZtq1WnS7-aZNjAISs2PPkxSzEt3VgyxntPNUdVdKRLkdiZxHh5jV043VmaPVyRugAxtpRkquBWsv"/>
+</div>
+<div class="p-6">
+<h3 class="font-body-md text-body-md line-clamp-2 mb-2 group-hover:text-[#E60026] transition-colors">MacBook Pro M3 14 inch 8CPU 10GPU 8GB 512GB</h3>
+<div class="flex items-baseline gap-3 mb-6">
+<span class="text-[#E60026] font-bold text-lg">38.490.000₫</span>
+<span class="text-gray-400 text-sm line-through">39.990.000₫</span>
+</div>
+<button class="w-full py-3 border border-gray-200 rounded-lg font-label-md text-label-md group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">Xem chi tiết</button>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] group transition-all duration-300 hover:-translate-y-2">
+<div class="aspect-square overflow-hidden bg-[#F5F5F7] p-8">
+<img alt="Apple Watch Series 9" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" data-alt="An Apple Watch Series 9 featuring a Midnight Aluminum case and matching band. The watch is positioned elegantly against a dark, moody background that highlights the vibrant watch face. The lighting is dramatic yet soft, showcasing the high-contrast display and refined materials in a premium, technological context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpgdVYhTTgAzybCW4BDqg7_VDtf1dBZas_m6Qqb72TWe6BZrCKVpH_hmHB2oYb2Z59TU4waHefNZUtyIvyjbDBUxI0fbOMhVjW1qK0zpue1wGS3MAc7oa3__xZpWWdD73naDbWVly_Cq1dSyRg0nBrKQHUmF4S1AiygAW8Lx6pY7v0cIqfWTMp7vU1rKtneohMq0uKooStdRqgigEv3ZKmuyVzdUhEx4HEdfBnCRb4KOnTMnK9PEN4ztV1fpDdlUlGRZ8HQjQDxGY2"/>
+</div>
+<div class="p-6">
+<h3 class="font-body-md text-body-md line-clamp-2 mb-2 group-hover:text-[#E60026] transition-colors">Apple Watch Series 9 GPS 41mm - Chính hãng</h3>
+<div class="flex items-baseline gap-3 mb-6">
+<span class="text-[#E60026] font-bold text-lg">8.990.000₫</span>
+<span class="text-gray-400 text-sm line-through">10.490.000₫</span>
+</div>
+<button class="w-full py-3 border border-gray-200 rounded-lg font-label-md text-label-md group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">Xem chi tiết</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Promo Banner -->
+<section class="mt-xl">
+<div class="w-full bg-[#E60026] py-lg">
+<div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between text-white gap-6">
+<div>
+<h2 class="font-headline-xl text-headline-xl mb-2">Đăng ký thành viên - Nhận ngay ưu đãi 10%</h2>
+<p class="font-body-md text-body-md opacity-90">Dành cho khách hàng mới mua sắm lần đầu tại Đức Bách Hoá</p>
+</div>
+<button class="bg-white text-[#E60026] px-10 py-4 rounded-full font-label-md text-label-md font-bold hover:bg-gray-100 transition-colors">Xem ngay</button>
+</div>
+</div>
+</section>
+<!-- Trust Points -->
+<section class="max-w-[1200px] mx-auto px-6 py-xl border-b border-gray-100">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
+<div class="flex flex-col items-center text-center p-4">
+<span class="material-symbols-outlined text-4xl text-[#E60026] mb-4">verified</span>
+<h4 class="font-headline-md text-lg mb-1">Chính hãng 100%</h4>
+<p class="text-sm text-secondary">Cam kết nguồn gốc rõ ràng</p>
+</div>
+<div class="flex flex-col items-center text-center p-4">
+<span class="material-symbols-outlined text-4xl text-[#E60026] mb-4">security</span>
+<h4 class="font-headline-md text-lg mb-1">Bảo hành uy tín</h4>
+<p class="text-sm text-secondary">Hỗ trợ kỹ thuật 24/7</p>
+</div>
+<div class="flex flex-col items-center text-center p-4">
+<span class="material-symbols-outlined text-4xl text-[#E60026] mb-4">local_shipping</span>
+<h4 class="font-headline-md text-lg mb-1">Giao nhanh</h4>
+<p class="text-sm text-secondary">Miễn phí nội thành từ 1h</p>
+</div>
+<div class="flex flex-col items-center text-center p-4">
+<span class="material-symbols-outlined text-4xl text-[#E60026] mb-4">sell</span>
+<h4 class="font-headline-md text-lg mb-1">Giá cạnh tranh</h4>
+<p class="text-sm text-secondary">Luôn tốt nhất thị trường</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#F5F5F7] dark:bg-zinc-900 w-full mt-20 border-t border-gray-200 dark:border-zinc-800">
+<div class="max-w-[1200px] mx-auto px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+<div>
+<span class="text-lg font-bold text-black dark:text-white block mb-6">Đức Bách Hoá</span>
+<p class="text-sm font-normal leading-relaxed text-gray-500 dark:text-zinc-400 mb-6">Chuyên cung cấp các sản phẩm Apple chính hãng với giá tốt nhất thị trường và dịch vụ bảo hành chuyên nghiệp.</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-[#E60026]">social_leaderboard</span>
+<span class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-[#E60026]">share</span>
+<span class="material-symbols-outlined text-gray-400 cursor-pointer hover:text-[#E60026]">movie</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-black dark:text-white mb-6 uppercase text-xs tracking-widest">Sản phẩm</h4>
+<ul class="space-y-3">
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">iPhone</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">iPad</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Mac</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Phụ kiện</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-black dark:text-white mb-6 uppercase text-xs tracking-widest">Chính sách</h4>
+<ul class="space-y-3">
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Chính sách bảo hành</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Giao hàng</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Đổi trả hàng</a></li>
+<li><a class="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Bảo mật thông tin</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-black dark:text-white mb-6 uppercase text-xs tracking-widest">Liên hệ</h4>
+<ul class="space-y-3">
+<li class="text-sm text-gray-500 dark:text-zinc-400">Hotline: 1900 1234</li>
+<li class="text-sm text-gray-500 dark:text-zinc-400">Email: hotro@ducbachhoa.vn</li>
+<li class="text-sm text-gray-500 dark:text-zinc-400">Địa chỉ: Quận 1, TP. Hồ Chí Minh</li>
+</ul>
+</div>
+</div>
+<div class="max-w-[1200px] mx-auto px-8 py-8 border-t border-gray-200 dark:border-zinc-800">
+<p class="text-sm text-gray-400 dark:text-zinc-500 text-center">© 2024 Đức Bách Hoá. Premium E-commerce. Crafted for Excellence.</p>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-lg fixed bottom-0 w-full rounded-t-2xl md:hidden border-t border-gray-100 dark:border-zinc-800 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-50">
+<div class="flex justify-around items-center h-20 pb-safe px-4">
+<div class="text-[#E60026] dark:text-[#FF1A3D] flex flex-col items-center gap-1 tap-highlight-transparent">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] font-medium uppercase tracking-widest">Trang chủ</span>
+</div>
+<div class="text-gray-400 dark:text-zinc-500 flex flex-col items-center gap-1 hover:text-black dark:hover:text-white tap-highlight-transparent">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium uppercase tracking-widest">Sản phẩm</span>
+</div>
+<div class="text-gray-400 dark:text-zinc-500 flex flex-col items-center gap-1 hover:text-black dark:hover:text-white tap-highlight-transparent">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-medium uppercase tracking-widest">Tìm kiếm</span>
+</div>
+<div class="text-gray-400 dark:text-zinc-500 flex flex-col items-center gap-1 hover:text-black dark:hover:text-white tap-highlight-transparent">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-[10px] font-medium uppercase tracking-widest">Giỏ hàng</span>
+</div>
+<div class="text-gray-400 dark:text-zinc-500 flex flex-col items-center gap-1 hover:text-black dark:hover:text-white tap-highlight-transparent">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium uppercase tracking-widest">Cá nhân</span>
+</div>
+</div>
+</nav>
+</body></html>

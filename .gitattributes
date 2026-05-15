@@ -1,0 +1,13 @@
+# Normalize line endings and handle text files consistently
+* text=auto eol=lf
+
+# Treat common image types as binary (no diffs)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg binary
+
+# Lock files shouldn’t be auto-merged
+package-lock.json -merge
