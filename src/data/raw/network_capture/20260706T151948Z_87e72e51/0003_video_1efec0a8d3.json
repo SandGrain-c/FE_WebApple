@@ -1,0 +1,21 @@
+{
+  "captured_at": "2026-07-06T15:20:02.544210+00:00",
+  "url": "https://www.tiktok.com/api/customtdk/item/?WebIdLastTime=1783351195&aid=1988&app_language=vi-VN&app_name=tiktok_web&browser_language=vi-VN&browser_name=Mozilla&browser_online=true&browser_platform=MacIntel&browser_version=5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F149.0.0.0%20Safari%2F537.36&channel=tiktok_web&clientAbVersionIds=70508271&clientAbVersionIds=73720541&clientAbVersionIds=75638231&clientAbVersionIds=75694227&clientAbVersionIds=75843653&clientAbVersionIds=76034399&clientAbVersionIds=76055829&clientAbVersionIds=76065197&clientAbVersionIds=76124481&clientAbVersionIds=76143621&clientAbVersionIds=76146172&clientAbVersionIds=76146380&clientAbVersionIds=76191889&clientAbVersionIds=76240231&clientAbVersionIds=76248966&clientAbVersionIds=76276622&clientAbVersionIds=76314874&clientAbVersionIds=76360146&clientAbVersionIds=76365577&clientAbVersionIds=76378432&clientAbVersionIds=76383374&clientAbVersionIds=76389840&clientAbVersionIds=76403729&clientAbVersionIds=76424652&clientAbVersionIds=76431143&clientAbVersionIds=76463852&clientAbVersionIds=70405643&clientAbVersionIds=71057832&clientAbVersionIds=71200802&clientAbVersionIds=73171280&clientAbVersionIds=73208420&clientAbVersionIds=74008524&clientAbVersionIds=74276218&clientAbVersionIds=74413136&clientAbVersionIds=74844724&clientAbVersionIds=75330961&clientAbVersionIds=73675307&clientAbVersionIds=76214371&cookie_enabled=true&data_collection_enabled=false&device_id=7659435046188746258&device_platform=web_pc&focus_state=true&from_page=video&history_len=2&is_fullscreen=false&is_page_visible=true&itemId=7654115458982939924&odinId=7659434995999736852&os=mac&priority_region=&referer=https%3A%2F%2Fwww.tiktok.com%2F%40daoquyen.org%2Fvideo%2F7654115458982939924&region=VN&root_referer=https%3A%2F%2Fwww.tiktok.com%2F%40daoquyen.org%2Fvideo%2F7654115458982939924&screen_height=900&screen_width=1280&tz_name=Asia%2FSaigon&user_is_login=false&webcast_language=vi-VN",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "url_matches_hint": true,
+  "json_matches_hint": false,
+  "data": {
+    "extra": {
+      "fatal_item_ids": [],
+      "logid": "202607062320023C517F2003B268B029DC",
+      "now": 1783351202000
+    },
+    "log_pb": {
+      "impr_id": "202607062320023C517F2003B268B029DC"
+    },
+    "statusCode": 0,
+    "status_code": 0,
+    "status_msg": ""
+  }
+}

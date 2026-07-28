@@ -1,6 +1,6 @@
 export default function TrustPoint() {
     return(
-        <section className="max-w-[1400px] mx-auto w-[80%] border-b border-gray-100 ">
+        <section className="max-w-350 mx-auto w-[80%] border-b border-gray-100 ">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
                 <div className="flex flex-col items-center text-center p-4">
                     <span className="material-symbols-outlined text-4xl text-primary mb-4">verified</span>

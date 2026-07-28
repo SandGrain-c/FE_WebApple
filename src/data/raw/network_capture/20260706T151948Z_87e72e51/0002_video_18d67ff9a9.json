@@ -1,0 +1,77 @@
+{
+  "captured_at": "2026-07-06T15:20:02.542090+00:00",
+  "url": "https://www.tiktok.com/api/seo/keyword/item_tags/?WebIdLastTime=1783351195&aid=1988&app_language=vi-VN&app_name=tiktok_web&browser_language=vi-VN&browser_name=Mozilla&browser_online=true&browser_platform=MacIntel&browser_version=5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F149.0.0.0%20Safari%2F537.36&channel=tiktok_web&clientABVersions=73675307&clientABVersions=76214371&clientABVersions=70508271&clientABVersions=73720541&clientABVersions=75638231&clientABVersions=75694227&clientABVersions=75843653&clientABVersions=76034399&clientABVersions=76055829&clientABVersions=76065197&clientABVersions=76124481&clientABVersions=76143621&clientABVersions=76146172&clientABVersions=76146380&clientABVersions=76191889&clientABVersions=76240231&clientABVersions=76248966&clientABVersions=76276622&clientABVersions=76314874&clientABVersions=76360146&clientABVersions=76365577&clientABVersions=76378432&clientABVersions=76383374&clientABVersions=76389840&clientABVersions=76403729&clientABVersions=76424652&clientABVersions=76431143&clientABVersions=76463852&clientABVersions=70405643&clientABVersions=71057832&clientABVersions=71200802&clientABVersions=73171280&clientABVersions=73208420&clientABVersions=74008524&clientABVersions=74276218&clientABVersions=74413136&clientABVersions=74844724&clientABVersions=75330961&cookie_enabled=true&data_collection_enabled=false&device_id=7659435046188746258&device_platform=web_pc&focus_state=true&from_page=video&history_len=2&is_fullscreen=false&is_page_visible=true&itemIds=7654115458982939924&odinId=7659434995999736852&os=mac&priority_region=&referer=https%3A%2F%2Fwww.tiktok.com%2F%40daoquyen.org%2Fvideo%2F7654115458982939924&region=VN&root_referer=https%3A%2F%2Fwww.tiktok.com%2F%40daoquyen.org%2Fvideo%2F7654115458982939924&screen_height=900&screen_width=1280&trafficType=0&tz_name=Asia%2FSaigon&user_is_login=false&webcast_language=vi-VN",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "url_matches_hint": true,
+  "json_matches_hint": false,
+  "data": {
+    "extra": {
+      "fatal_item_ids": [],
+      "logid": "20260706232002406265BC400F6BB6D622",
+      "now": 1783351202000
+    },
+    "keywordsByItemId": {
+      "7654115458982939924": {
+        "keywordTags": [
+          {
+            "keyword": "hải-cẩu-nghĩa-là-gì-trong-tình-yêu",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "milo-dầm-hải-phòng",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "hải-phòng-haidilao",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "bức-binh-phong-là-gì-trong-tình-yêu",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "quang-thái-curnon-và-người-yêu",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "người-yêu-của-ceo-trần-việt-bảo-hoàng",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "quân-hồng-và-người-yêu",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "phố-văn-cao-hải-phòng-về-đêm",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "phong-tục-ở-hải-dương-thách-cưới-bâo-nhiêu",
+            "pageType": 0,
+            "seoPageType": 7
+          },
+          {
+            "keyword": "cơ-sở-manyo-ở-hải-phòng",
+            "pageType": 0,
+            "seoPageType": 7
+          }
+        ]
+      }
+    },
+    "log_pb": {
+      "impr_id": "20260706232002406265BC400F6BB6D622"
+    },
+    "statusCode": 0,
+    "status_code": 0,
+    "status_msg": ""
+  }
+}

@@ -146,7 +146,7 @@ export default function VideoReview() {
                   spaceBetween: 16,
                 },
               }}
-              className="!pb-1"
+              className="pb-1!"
             >
               {reviewVideos.map((video, index) => (
                 <SwiperSlide key={video.id} className="h-auto">
@@ -154,7 +154,7 @@ export default function VideoReview() {
                     onClick={() => setSelectedVideoIndex(index)}
                     className="h-full cursor-pointer bg-surface border border-surface-container-high rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1"
                   >
-                    <div className="relative aspect-[9/16] bg-surface-container overflow-hidden">
+                    <div className="relative aspect-9/16 bg-surface-container overflow-hidden">
                       {video.thumbnail ? (
                         <img
                           src={video.thumbnail}
@@ -187,7 +187,7 @@ export default function VideoReview() {
                         </div>
                       </div>
 
-                      <div className="absolute left-0 right-0 bottom-0 p-3 bg-gradient-to-t from-black/75 via-black/25 to-transparent">
+                      <div className="absolute left-0 right-0 bottom-0 p-3 bg-linear-to-t from-black/75 via-black/25 to-transparent">
                         <h3 className="text-white text-label-md md:text-body-md font-bold line-clamp-2">
                           {video.title}
                         </h3>
@@ -247,7 +247,7 @@ export default function VideoReview() {
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-[420px] md:max-w-[480px] max-h-[92dvh] bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            className="relative w-full max-w-105 md:max-w-120 max-h-[92dvh] bg-surface rounded-2xl overflow-hidden shadow-2xl flex flex-col"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -302,7 +302,7 @@ export default function VideoReview() {
             </button>
 
             <div className="bg-black flex items-center justify-center max-h-[calc(92dvh-104px)]">
-              <div className="aspect-[9/16] w-full max-h-[calc(92dvh-104px)]">
+              <div className="aspect-9/16 w-full max-h-[calc(92dvh-104px)]">
                 {isLocalVideo(selectedVideo.url) ? (
                   <video
                     key={selectedVideo.url}

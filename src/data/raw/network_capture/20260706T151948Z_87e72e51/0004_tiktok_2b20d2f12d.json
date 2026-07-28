@@ -1,0 +1,83 @@
+{
+  "captured_at": "2026-07-06T15:20:05.934168+00:00",
+  "url": "https://www.tiktok.com/node-webapp/api/login-config",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "url_matches_hint": false,
+  "json_matches_hint": true,
+  "data": {
+    "statusCode": 0,
+    "config": {
+      "emailSuffixConfig": [
+        "gmail.com",
+        "outlook.com",
+        "hotmail.com",
+        "icloud.com",
+        "yahoo.com.vn"
+      ],
+      "platformConfig": {
+        "show_num": 2,
+        "order": "FACEBOOK,GOOGLE,LINE,KAKAOTALK,APPLE,INSTAGRAM"
+      },
+      "platformConfigV2": {
+        "show_num": 2,
+        "order": "FACEBOOK,GOOGLE,LINE,KAKAOTALK,APPLE,INSTAGRAM"
+      },
+      "signupConfig": {
+        "enable": true,
+        "text": {}
+      },
+      "forceLogin": false,
+      "emailConsent": true,
+      "ttpConfig": {
+        "open": true,
+        "syncSeverList": [
+          {
+            "domain": "https://web-sg.tiktok.com",
+            "name": "global"
+          },
+          {
+            "domain": "https://us.tiktok.com",
+            "name": "ttp"
+          },
+          {
+            "domain": "https://login-no1a.www.tiktok.com",
+            "name": "gcp"
+          }
+        ]
+      },
+      "preventSignupText": {},
+      "disableStandaloneAidLoginList": [
+        "580589"
+      ],
+      "disableStandaloneAppFlags": {
+        "580589": {
+          "name": "L8",
+          "hideAll": {
+            "ios": true,
+            "mac": true,
+            "android": false
+          },
+          "versionControls": {
+            "ios": {
+              "enableVersions": [
+                {
+                  "op": "gte",
+                  "version": "7.9.0"
+                }
+              ]
+            },
+            "mac": {
+              "enableVersions": [
+                {
+                  "op": "gte",
+                  "version": "7.9.0"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
