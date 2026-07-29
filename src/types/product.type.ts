@@ -1,6 +1,28 @@
 // src/types/product.type.ts
 export type StockStatus = "in-stock" | "out-of-stock";
 
+export type ProductCatalogSort =
+  | "newest"
+  | "oldest"
+  | "price_asc"
+  | "price_desc"
+  | "name_asc"
+  | "name_desc"
+  | "best_selling";
+
+export type ProductCatalogQuery = {
+  categorySlug?: string;
+  search?: string;
+  color?: string;
+  capacity?: string;
+  ram?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: ProductCatalogSort;
+  page?: number;
+  limit?: number;
+};
+
 export type ProductVariantImage = {
   imageId: number;
   imageUrl: string;

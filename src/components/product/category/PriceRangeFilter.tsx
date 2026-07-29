@@ -1,10 +1,13 @@
 "use client";
+
+import type { PriceRangeValue } from "./ProductFilterSidebar";
+
 // Component để hiển thị bộ lọc khoảng giá cho trang danh mục sản phẩm, cho phép người dùng chọn các khoảng giá phổ biến hoặc nhập khoảng giá tùy chỉnh, cũng như sử dụng thanh trượt để điều chỉnh khoảng giá một cách trực quan, giúp cải thiện trải nghiệm tìm kiếm sản phẩm theo giá cả phù hợp với nhu cầu của người dùng
 type PriceRangeFilterProps = {
-  priceRange: string;
+  priceRange: PriceRangeValue;
   minPrice: number | "";
   maxPrice: number | "";
-  onPriceRangeChange: (value: string) => void;
+  onPriceRangeChange: (value: PriceRangeValue) => void;
   onCustomPriceChange: (value: {
     minPrice: number | "";
     maxPrice: number | "";
@@ -15,7 +18,7 @@ const MIN_PRICE = 0;
 const MAX_PRICE = 65_000_000;
 const STEP_PRICE = 500_000;
 
-const priceOptions = [
+const priceOptions: { label: string; value: PriceRangeValue }[] = [
   { label: "Tất cả", value: "all" },
   { label: "Dưới 15 triệu", value: "under-15" },
   { label: "15 - 25 triệu", value: "15-25" },

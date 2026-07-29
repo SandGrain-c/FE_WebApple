@@ -1,26 +1,25 @@
-// Component để hiển thị thanh công cụ sắp xếp và bộ lọc cho trang danh mục sản phẩm, giúp người dùng dễ dàng chọn cách sắp xếp sản phẩm và mở bộ lọc trên thiết bị di động để tìm kiếm sản phẩm một cách nhanh chóng và hiệu quả
+import type { ProductCatalogSort } from "@/types/product.type";
 
-export type ProductSortValue = // Các giá trị sắp xếp sản phẩm, bao gồm mặc định, giá thấp đến cao, giá cao đến thấp, bán chạy và mới nhất, giúp người dùng có thể lựa chọn cách hiển thị sản phẩm phù hợp với nhu cầu của họ
-  | "default"
-  | "price-asc"
-  | "price-desc"
-  | "best-selling"
-  | "newest";
-
-type CategorySortBarProps = { // Các props cho component CategorySortBar, bao gồm tổng số sản phẩm, giá trị sắp xếp hiện tại, hàm để xử lý thay đổi sắp xếp và tùy chọn để mở bộ lọc trên thiết bị di động
+type CategorySortBarProps = {
   totalProducts: number;
-  sortValue: ProductSortValue;
-  onSortChange: (value: ProductSortValue) => void;
+  sortValue: ProductCatalogSort;
+  onSortChange: (value: ProductCatalogSort) => void;
   onOpenMobileFilter?: () => void;
 };
 
-const sortOptions: { label: string; value: ProductSortValue }[] = [ // Các tùy chọn sắp xếp sản phẩm được định nghĩa dưới dạng một mảng các đối tượng, mỗi đối tượng chứa nhãn hiển thị và giá trị sắp xếp tương ứng, giúp dễ dàng hiển thị trong dropdown và xử lý logic sắp xếp khi người dùng chọn một tùy chọn
-  { label: "Mặc định", value: "default" },
-  { label: "Giá thấp đến cao", value: "price-asc" },
-  { label: "Giá cao đến thấp", value: "price-desc" },
-  { label: "Bán chạy", value: "best-selling" },
+const sortOptions: { label: string; value: ProductCatalogSort }[] = [
   { label: "Mới nhất", value: "newest" },
+  { label: "Cũ nhất", value: "oldest" },
+  { label: "Giá thấp đến cao", value: "price_asc" },
+  { label: "Giá cao đến thấp", value: "price_desc" },
+  { label: "Tên A–Z", value: "name_asc" },
+  { label: "Tên Z–A", value: "name_desc" },
+  { label: "Bán chạy nhất", value: "best_selling" },
 ];
+
+function isProductCatalogSort(value: string): value is ProductCatalogSort {
+  return sortOptions.some((option) => option.value === value);
+}
 
 export default function CategorySortBar({
   totalProducts,
@@ -33,9 +32,7 @@ export default function CategorySortBar({
       <div className="flex items-center justify-between gap-3">
         <p className="text-label-md text-secondary">
           Hiển thị{" "}
-          <span className="font-semibold text-on-surface">
-            {totalProducts}
-          </span>{" "}
+          <span className="font-semibold text-on-surface">{totalProducts}</span>{" "}
           sản phẩm
         </p>
 
@@ -53,9 +50,11 @@ export default function CategorySortBar({
 
         <select
           value={sortValue}
-          onChange={(event) =>
-            onSortChange(event.target.value as ProductSortValue)
-          }
+          onChange={(event) => {
+            if (isProductCatalogSort(event.target.value)) {
+              onSortChange(event.target.value);
+            }
+          }}
           className="rounded-full border border-outline-variant bg-surface px-3 py-2 text-label-md text-on-surface outline-none transition focus:border-primary"
         >
           {sortOptions.map((option) => (

@@ -1,35 +1,78 @@
-import type { GetProductsResponse } from "@/types/product.type";
+import type {
+  GetProductsResponse,
+  ProductCatalogQuery,
+} from "@/types/product.type";
 import type { ProductDetailResponse } from "@/types/product-detail.type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export type GetProductsParams = {
-  category?: string;
-  color?: string;
-  capacity?: string;
-  ram?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sort?: string;
-  page?: number;
-  limit?: number;
+type GetProductsOptions = {
+  signal?: AbortSignal;
 };
 
-export async function getProducts(params: GetProductsParams) {
+function appendTextParam(
+  searchParams: URLSearchParams,
+  key: string,
+  value: string | undefined,
+) {
+  const normalizedValue = value?.trim();
+
+  if (normalizedValue) {
+    searchParams.set(key, normalizedValue);
+  }
+}
+
+function appendPriceParam(
+  searchParams: URLSearchParams,
+  key: string,
+  value: number | undefined,
+) {
+  if (value !== undefined && Number.isFinite(value) && value >= 0) {
+    searchParams.set(key, String(value));
+  }
+}
+
+function appendPositiveIntegerParam(
+  searchParams: URLSearchParams,
+  key: string,
+  value: number | undefined,
+) {
+  if (value !== undefined && Number.isSafeInteger(value) && value > 0) {
+    searchParams.set(key, String(value));
+  }
+}
+
+export async function getProducts(
+  query: ProductCatalogQuery,
+  options: GetProductsOptions = {},
+) {
+  if (
+    query.minPrice !== undefined &&
+    query.maxPrice !== undefined &&
+    query.minPrice > query.maxPrice
+  ) {
+    throw new Error("Khoảng giá không hợp lệ");
+  }
+
   const searchParams = new URLSearchParams();
 
-  if (params.category) searchParams.set("category", params.category);
-  if (params.color) searchParams.set("color", params.color);
-  if (params.capacity) searchParams.set("capacity", params.capacity);
-  if (params.ram) searchParams.set("ram", params.ram);
-  if (params.minPrice !== undefined) searchParams.set("minPrice", String(params.minPrice));
-  if (params.maxPrice !== undefined) searchParams.set("maxPrice", String(params.maxPrice));
-  if (params.sort) searchParams.set("sort", params.sort);
-  if (params.page) searchParams.set("page", String(params.page));
-  if (params.limit) searchParams.set("limit", String(params.limit));
+  appendTextParam(searchParams, "categorySlug", query.categorySlug);
+  appendTextParam(searchParams, "search", query.search);
+  appendTextParam(searchParams, "color", query.color);
+  appendTextParam(searchParams, "capacity", query.capacity);
+  appendTextParam(searchParams, "ram", query.ram);
+  appendPriceParam(searchParams, "minPrice", query.minPrice);
+  appendPriceParam(searchParams, "maxPrice", query.maxPrice);
+  appendTextParam(searchParams, "sort", query.sort);
+  appendPositiveIntegerParam(searchParams, "page", query.page);
+  appendPositiveIntegerParam(searchParams, "limit", query.limit);
 
-  const res = await fetch(`${API_URL}/products?${searchParams.toString()}`, {
+  const queryString = searchParams.toString();
+  const url = `${API_URL}/products${queryString ? `?${queryString}` : ""}`;
+
+  const res = await fetch(url, {
     cache: "no-store",
+    signal: options.signal,
   });
 
   if (!res.ok) {
@@ -37,7 +80,6 @@ export async function getProducts(params: GetProductsParams) {
   }
 
   const json: GetProductsResponse = await res.json();
-  
 
   return json.data;
 }

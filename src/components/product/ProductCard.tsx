@@ -148,7 +148,17 @@ export default function ProductCard({
               {formatPrice(product.price)}
             </p>
             <p className="mt-1 text-xs font-medium text-secondary">
-            Đã bán: {product.sold ?? 0}
+              Đã bán: {product.sold ?? 0}
+            </p>
+            <p
+              className={[
+                "mt-1 text-xs font-semibold",
+                product.stockStatus === "in-stock"
+                  ? "text-green-700"
+                  : "text-error",
+              ].join(" ")}
+            >
+              {product.stockStatus === "in-stock" ? "Còn hàng" : "Hết hàng"}
             </p>
           </div>
 

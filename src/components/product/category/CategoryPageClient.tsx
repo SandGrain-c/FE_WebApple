@@ -3,23 +3,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import ActiveFilterChips, {
+  type RemoveFilterPayload,
+} from "./ActiveFilterChips";
 import CategoryBreadcrumb from "./CategoryBreadcrumb";
 import CategoryHeader from "./CategoryHeader";
-import ProductFilterSidebar, { type ProductFilters } from "./ProductFilterSidebar";
-import CategorySortBar, { type ProductSortValue } from "./CategorySortBar";
-import CategoryProductGrid from "./CategoryProductGrid";
 import CategoryPagination from "./CategoryPagination";
-import ActiveFilterChips, { type RemoveFilterPayload } from "./ActiveFilterChips";
+import CategoryProductGrid from "./CategoryProductGrid";
+import CategorySortBar from "./CategorySortBar";
+import ProductFilterSidebar, {
+  type PriceRangeValue,
+  type ProductFilters,
+} from "./ProductFilterSidebar";
 
 import { getProducts } from "@/services/product.service";
-import type { ProductCardItem, ProductPagination } from "@/types/product.type";
+import type {
+  ProductCardItem,
+  ProductCatalogSort,
+  ProductPagination,
+} from "@/types/product.type";
 
 type CategoryPageClientProps = {
   categorySlug: string;
-};
-
-type SearchParamsLike = {
-  get: (name: string) => string | null;
 };
 
 type CategoryInfo = {
@@ -28,13 +33,21 @@ type CategoryInfo = {
   description: string;
 };
 
+type CatalogUrlState = {
+  search: string;
+  filters: ProductFilters;
+  sort: ProductCatalogSort;
+  page: number;
+};
+
 const PRODUCTS_PER_PAGE = 8;
 
 const categoryInfoMap: Record<string, CategoryInfo> = {
   iphone: {
     slug: "iphone",
     name: "iPhone",
-    description: "Khám phá các dòng iPhone chính hãng, đa dạng màu sắc và dung lượng.",
+    description:
+      "Khám phá các dòng iPhone chính hãng, đa dạng màu sắc và dung lượng.",
   },
   ipad: {
     slug: "ipad",
@@ -44,14 +57,16 @@ const categoryInfoMap: Record<string, CategoryInfo> = {
   macbook: {
     slug: "macbook",
     name: "MacBook",
-    description: "MacBook chính hãng với hiệu năng mạnh mẽ cho học tập và công việc.",
+    description:
+      "MacBook chính hãng với hiệu năng mạnh mẽ cho học tập và công việc.",
   },
   "apple-watch": {
     slug: "apple-watch",
     name: "Apple Watch",
-    description: "Apple Watch chính hãng, hỗ trợ theo dõi sức khỏe và luyện tập.",
+    description:
+      "Apple Watch chính hãng, hỗ trợ theo dõi sức khỏe và luyện tập.",
   },
-  "airpods": {
+  airpods: {
     slug: "airpods",
     name: "AirPods",
     description: "Tai nghe AirPods chính hãng, âm thanh chất lượng cao.",
@@ -72,236 +87,175 @@ const defaultFilters: ProductFilters = {
   priceRange: "all",
   minPrice: "",
   maxPrice: "",
-  capacities: [],
-  colors: [],
-  stockStatus: "all",
+  capacity: "",
+  color: "",
+  ram: "",
 };
 
-const allowedPriceRanges = ["all", "under-15", "15-25", "over-25", "custom"];
-
-const allowedSortValues: ProductSortValue[] = [
-  "default",
-  "price-asc",
-  "price-desc",
-  "best-selling",
+const productCatalogSorts: ProductCatalogSort[] = [
   "newest",
+  "oldest",
+  "price_asc",
+  "price_desc",
+  "name_asc",
+  "name_desc",
+  "best_selling",
 ];
 
-function parseNumberParam(value: string | null): number | "" {
-  if (!value) return "";
+function parseTextParam(value: string | null) {
+  return value?.trim() ?? "";
+}
 
-  const numberValue = Number(value);
+function parsePriceParam(value: string | null): number | "" {
+  if (!value?.trim()) return "";
 
-  if (Number.isNaN(numberValue) || numberValue < 0) {
+  const parsedValue = Number(value);
+
+  if (!Number.isFinite(parsedValue) || parsedValue < 0) {
     return "";
   }
 
-  return numberValue;
+  return parsedValue;
 }
 
-function parseArrayParam(value: string | null): string[] {
-  if (!value) return [];
+function getPriceRange(
+  minPrice: number | "",
+  maxPrice: number | "",
+): PriceRangeValue {
+  if (minPrice === "" && maxPrice === "") return "all";
+  if (minPrice === "" && maxPrice === 15_000_000) return "under-15";
+  if (minPrice === 15_000_000 && maxPrice === 25_000_000) return "15-25";
+  if (minPrice === 25_000_000 && maxPrice === "") return "over-25";
 
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return "custom";
 }
 
-function parseFiltersFromSearchParams(
-  searchParams: SearchParamsLike,
-): ProductFilters {
-  const priceRangeParam = searchParams.get("priceRange") ?? "all";
-  const stockStatusParam = searchParams.get("stockStatus") ?? "all";
+function parseSortParam(value: string | null): ProductCatalogSort {
+  const normalizedValue = value?.trim();
+  const matchedSort = productCatalogSorts.find(
+    (sortValue) => sortValue === normalizedValue,
+  );
 
-  const priceRange = allowedPriceRanges.includes(priceRangeParam)
-    ? priceRangeParam
-    : "all";
+  return matchedSort ?? "newest";
+}
 
-  const stockStatus =
-    stockStatusParam === "in-stock" || stockStatusParam === "out-of-stock"
-      ? stockStatusParam
-      : "all";
+function parsePageParam(value: string | null) {
+  if (!value || !/^\d+$/.test(value)) return 1;
 
-  const minPrice = parseNumberParam(searchParams.get("minPrice"));
-  const maxPrice = parseNumberParam(searchParams.get("maxPrice"));
+  const parsedValue = Number(value);
+
+  return Number.isSafeInteger(parsedValue) && parsedValue > 0
+    ? parsedValue
+    : 1;
+}
+
+function parseCatalogUrlState(searchParams: URLSearchParams): CatalogUrlState {
+  const minPrice = parsePriceParam(searchParams.get("minPrice"));
+  const maxPrice = parsePriceParam(searchParams.get("maxPrice"));
 
   return {
-    priceRange,
-    minPrice,
-    maxPrice,
-    capacities: parseArrayParam(searchParams.get("capacities")),
-    colors: parseArrayParam(searchParams.get("colors")),
-    stockStatus,
+    search: parseTextParam(searchParams.get("search")),
+    filters: {
+      priceRange: getPriceRange(minPrice, maxPrice),
+      minPrice,
+      maxPrice,
+      color: parseTextParam(searchParams.get("color")),
+      capacity: parseTextParam(searchParams.get("capacity")),
+      ram: parseTextParam(searchParams.get("ram")),
+    },
+    sort: parseSortParam(searchParams.get("sort")),
+    page: parsePageParam(searchParams.get("page")),
   };
 }
 
-function parseSortFromSearchParams(
-  searchParams: SearchParamsLike,
-): ProductSortValue {
-  const sortParam = searchParams.get("sort") as ProductSortValue | null;
-
-  if (sortParam && allowedSortValues.includes(sortParam)) {
-    return sortParam;
-  }
-
-  return "default";
-}
-
-function parsePageFromSearchParams(searchParams: SearchParamsLike): number {
-  const pageParam = Number(searchParams.get("page"));
-
-  if (Number.isNaN(pageParam) || pageParam < 1) {
-    return 1;
-  }
-
-  return pageParam;
-}
-
-function appendArrayParam(
+function appendTextParam(
   params: URLSearchParams,
   key: string,
-  value: string[],
+  value: string,
 ) {
-  if (value.length > 0) {
-    params.set(key, value.join(","));
+  const normalizedValue = value.trim();
+
+  if (normalizedValue) {
+    params.set(key, normalizedValue);
   }
 }
 
-function buildCategorySearchParams(
-  filters: ProductFilters,
-  sortValue: ProductSortValue,
-  page: number,
-) {
+function buildCategorySearchParams(state: CatalogUrlState) {
   const params = new URLSearchParams();
 
-  if (filters.priceRange !== "all") {
-    params.set("priceRange", filters.priceRange);
+  appendTextParam(params, "search", state.search);
+  appendTextParam(params, "color", state.filters.color);
+  appendTextParam(params, "capacity", state.filters.capacity);
+  appendTextParam(params, "ram", state.filters.ram);
+
+  if (state.filters.minPrice !== "") {
+    params.set("minPrice", String(state.filters.minPrice));
   }
 
-  if (filters.minPrice !== "") {
-    params.set("minPrice", String(filters.minPrice));
+  if (state.filters.maxPrice !== "") {
+    params.set("maxPrice", String(state.filters.maxPrice));
   }
 
-  if (filters.maxPrice !== "") {
-    params.set("maxPrice", String(filters.maxPrice));
+  if (state.sort !== "newest") {
+    params.set("sort", state.sort);
   }
 
-  appendArrayParam(params, "capacities", filters.capacities);
-  appendArrayParam(params, "colors", filters.colors);
-
-  if (filters.stockStatus !== "all") {
-    params.set("stockStatus", filters.stockStatus);
-  }
-
-  if (sortValue !== "default") {
-    params.set("sort", sortValue);
-  }
-
-  if (page > 1) {
-    params.set("page", String(page));
+  if (state.page > 1) {
+    params.set("page", String(state.page));
   }
 
   return params;
 }
 
-function getPriceParams(filters: ProductFilters) {
-  if (filters.priceRange === "custom") {
-    return {
-      minPrice: filters.minPrice === "" ? undefined : filters.minPrice,
-      maxPrice: filters.maxPrice === "" ? undefined : filters.maxPrice,
-    };
-  }
-
-  if (filters.priceRange === "under-15") {
-    return {
-      minPrice: undefined,
-      maxPrice: 15_000_000,
-    };
-  }
-
-  if (filters.priceRange === "15-25") {
-    return {
-      minPrice: 15_000_000,
-      maxPrice: 25_000_000,
-    };
-  }
-
-  if (filters.priceRange === "over-25") {
-    return {
-      minPrice: 25_000_000,
-      maxPrice: undefined,
-    };
-  }
-
-  return {
-    minPrice: undefined,
-    maxPrice: undefined,
-  };
+function isAbortError(error: unknown) {
+  return error instanceof Error && error.name === "AbortError";
 }
 
-function mapSortToApiSort(sortValue: ProductSortValue) {
-  switch (sortValue) {
-    case "price-asc":
-      return "price_asc";
-
-    case "price-desc":
-      return "price_desc";
-
-    case "newest":
-      return "newest";
-
-    case "best-selling":
-      return "best_selling";
-
-    case "default":
-    default:
-      return "newest";
-  }
+function emptyPagination(page = 1): ProductPagination {
+  return {
+    page,
+    limit: PRODUCTS_PER_PAGE,
+    totalItems: 0,
+    totalPages: 0,
+  };
 }
 
 export default function CategoryPageClient({
   categorySlug,
 }: CategoryPageClientProps) {
+  const canonicalCategorySlug = categorySlug.trim().toLowerCase();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const rawQuery = searchParams.toString();
+  const catalogState = useMemo(
+    () => parseCatalogUrlState(new URLSearchParams(rawQuery)),
+    [rawQuery],
+  );
 
   const productListTopRef = useRef<HTMLDivElement | null>(null);
 
-  const [filters, setFilters] = useState<ProductFilters>(() =>
-    parseFiltersFromSearchParams(searchParams),
-  );
-
-  const [sortValue, setSortValue] = useState<ProductSortValue>(() =>
-    parseSortFromSearchParams(searchParams),
-  );
-
-  const [currentPage, setCurrentPage] = useState(() =>
-    parsePageFromSearchParams(searchParams),
-  );
-
   const [products, setProducts] = useState<ProductCardItem[]>([]);
-
-  const [pagination, setPagination] = useState<ProductPagination>({
-    page: 1,
-    limit: PRODUCTS_PER_PAGE,
-    totalItems: 0,
-    totalPages: 1,
-  });
-
+  const [pagination, setPagination] = useState<ProductPagination>(() =>
+    emptyPagination(catalogState.page),
+  );
   const [capacityOptions, setCapacityOptions] = useState<string[]>([]);
   const [colorOptions, setColorOptions] = useState<string[]>([]);
-
+  const [ramOptions, setRamOptions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  const category: CategoryInfo = categoryInfoMap[categorySlug] ?? {
-    slug: categorySlug,
+  const category: CategoryInfo = categoryInfoMap[canonicalCategorySlug] ?? {
+    slug: canonicalCategorySlug,
     name: "Danh mục",
     description: "Danh sách sản phẩm Apple chính hãng.",
   };
+
+  const hasInvalidPriceRange =
+    catalogState.filters.minPrice !== "" &&
+    catalogState.filters.maxPrice !== "" &&
+    catalogState.filters.minPrice > catalogState.filters.maxPrice;
 
   const scrollToProductListTop = useCallback(() => {
     requestAnimationFrame(() => {
@@ -312,154 +266,187 @@ export default function CategoryPageClient({
     });
   }, []);
 
-  const syncUrl = useCallback(
-    (
-      nextFilters: ProductFilters,
-      nextSortValue: ProductSortValue,
-      nextPage: number,
-    ) => {
-      const params = buildCategorySearchParams(
-        nextFilters,
-        nextSortValue,
-        nextPage,
-      );
+  const navigateToState = useCallback(
+    (nextState: CatalogUrlState, replace = false) => {
+      const queryString = buildCategorySearchParams(nextState).toString();
+      const href = queryString ? `${pathname}?${queryString}` : pathname;
 
-      const queryString = params.toString();
+      if (replace) {
+        router.replace(href, { scroll: false });
+        return;
+      }
 
-      router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
-        scroll: false,
-      });
+      router.push(href, { scroll: false });
     },
     [pathname, router],
   );
 
   useEffect(() => {
-    setFilters(parseFiltersFromSearchParams(searchParams));
-    setSortValue(parseSortFromSearchParams(searchParams));
-    setCurrentPage(parsePageFromSearchParams(searchParams));
-  }, [searchParams]);
+    const controller = new AbortController();
 
-  useEffect(() => {
     const fetchProducts = async () => {
+      await Promise.resolve();
+
+      if (controller.signal.aborted) return;
+
+      if (hasInvalidPriceRange) {
+        setIsLoading(false);
+        setProducts([]);
+        setPagination(emptyPagination(catalogState.page));
+        setErrorMessage(
+          "Khoảng giá không hợp lệ. Giá tối thiểu không được lớn hơn giá tối đa.",
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      setErrorMessage("");
+      setProducts([]);
+      setPagination(emptyPagination(catalogState.page));
+
       try {
-        setIsLoading(true);
-        setErrorMessage("");
+        const data = await getProducts(
+          {
+            categorySlug: canonicalCategorySlug,
+            search: catalogState.search,
+            color: catalogState.filters.color,
+            capacity: catalogState.filters.capacity,
+            ram: catalogState.filters.ram,
+            minPrice:
+              catalogState.filters.minPrice === ""
+                ? undefined
+                : catalogState.filters.minPrice,
+            maxPrice:
+              catalogState.filters.maxPrice === ""
+                ? undefined
+                : catalogState.filters.maxPrice,
+            sort: catalogState.sort,
+            page: catalogState.page,
+            limit: PRODUCTS_PER_PAGE,
+          },
+          { signal: controller.signal },
+        );
 
-        const priceParams = getPriceParams(filters);
+        if (controller.signal.aborted) return;
 
-        const data = await getProducts({
-          category: categorySlug,
+        if (
+          !data ||
+          !Array.isArray(data.items) ||
+          !data.pagination ||
+          !Number.isSafeInteger(data.pagination.page) ||
+          !Number.isSafeInteger(data.pagination.limit) ||
+          !Number.isSafeInteger(data.pagination.totalItems) ||
+          !Number.isSafeInteger(data.pagination.totalPages)
+        ) {
+          throw new Error("Phản hồi danh sách sản phẩm không hợp lệ");
+        }
 
-          // BE hiện tại đang nhận 1 color/capacity.
-          // FE của bạn đang lưu dạng mảng, nên tạm thời lấy phần tử đầu tiên.
-          color: filters.colors[0],
-          capacity: filters.capacities[0],
-
-          minPrice: priceParams.minPrice,
-          maxPrice: priceParams.maxPrice,
-          sort: mapSortToApiSort(sortValue),
-          page: currentPage,
-          limit: PRODUCTS_PER_PAGE,
-        });
+        if (
+          data.pagination.totalPages > 0 &&
+          catalogState.page > data.pagination.totalPages
+        ) {
+          navigateToState(
+            { ...catalogState, page: data.pagination.totalPages },
+            true,
+          );
+          return;
+        }
 
         setProducts(data.items);
         setPagination(data.pagination);
-
-        setCapacityOptions(data.filters.capacities);
-        setColorOptions(data.filters.colors);
+        setCapacityOptions(
+          Array.isArray(data.filters?.capacities)
+            ? data.filters.capacities
+            : [],
+        );
+        setColorOptions(
+          Array.isArray(data.filters?.colors) ? data.filters.colors : [],
+        );
+        setRamOptions(
+          Array.isArray(data.filters?.ramOptions)
+            ? data.filters.ramOptions
+            : [],
+        );
       } catch (error) {
-        console.error("Lỗi lấy sản phẩm danh mục:", error);
-        setErrorMessage("Không thể tải danh sách sản phẩm. Vui lòng thử lại.");
+        if (isAbortError(error)) return;
+
+        setErrorMessage(
+          "Không thể tải danh sách sản phẩm. Vui lòng thử lại.",
+        );
         setProducts([]);
-        setPagination({
-          page: 1,
-          limit: PRODUCTS_PER_PAGE,
-          totalItems: 0,
-          totalPages: 1,
-        });
+        setPagination(emptyPagination(catalogState.page));
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    fetchProducts();
-  }, [categorySlug, filters, sortValue, currentPage]);
+    void fetchProducts();
 
-  const visibleProducts = useMemo(() => {
-    if (filters.stockStatus === "all") {
-      return products;
-    }
+    return () => {
+      controller.abort();
+    };
+  }, [
+    catalogState,
+    canonicalCategorySlug,
+    hasInvalidPriceRange,
+    navigateToState,
+  ]);
 
-    return products.filter(
-      (product) => product.stockStatus === filters.stockStatus,
-    );
-  }, [products, filters.stockStatus]);
-
-  const handleFilterChange = (nextFilters: ProductFilters) => {
-    setFilters(nextFilters);
-    setCurrentPage(1);
-    syncUrl(nextFilters, sortValue, 1);
+  const handleFilterChange = (filters: ProductFilters) => {
+    navigateToState({ ...catalogState, filters, page: 1 });
     scrollToProductListTop();
   };
 
   const handleClearFilters = () => {
-    setFilters(defaultFilters);
-    setCurrentPage(1);
-    syncUrl(defaultFilters, sortValue, 1);
+    navigateToState({ ...catalogState, filters: defaultFilters, page: 1 });
     scrollToProductListTop();
   };
 
   const handleRemoveFilter = (payload: RemoveFilterPayload) => {
-    let nextFilters: ProductFilters = filters;
+    const filters = { ...catalogState.filters };
 
-    if (payload.type === "price") {
-      nextFilters = {
-        ...filters,
-        priceRange: "all",
-        minPrice: "",
-        maxPrice: "",
-      };
+    switch (payload.type) {
+      case "price":
+        filters.priceRange = "all";
+        filters.minPrice = "";
+        filters.maxPrice = "";
+        break;
+
+      case "capacity":
+        filters.capacity = "";
+        break;
+
+      case "color":
+        filters.color = "";
+        break;
+
+      case "ram":
+        filters.ram = "";
+        break;
     }
 
-    if (payload.type === "capacity") {
-      nextFilters = {
-        ...filters,
-        capacities: filters.capacities.filter(
-          (capacity) => capacity !== payload.value,
-        ),
-      };
-    }
-
-    if (payload.type === "color") {
-      nextFilters = {
-        ...filters,
-        colors: filters.colors.filter((color) => color !== payload.value),
-      };
-    }
-
-    if (payload.type === "stockStatus") {
-      nextFilters = {
-        ...filters,
-        stockStatus: "all",
-      };
-    }
-
-    setFilters(nextFilters);
-    setCurrentPage(1);
-    syncUrl(nextFilters, sortValue, 1);
+    navigateToState({ ...catalogState, filters, page: 1 });
     scrollToProductListTop();
   };
 
-  const handleSortChange = (nextSortValue: ProductSortValue) => {
-    setSortValue(nextSortValue);
-    setCurrentPage(1);
-    syncUrl(filters, nextSortValue, 1);
+  const handleSortChange = (sort: ProductCatalogSort) => {
+    navigateToState({ ...catalogState, sort, page: 1 });
     scrollToProductListTop();
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    syncUrl(filters, sortValue, page);
+    if (
+      !Number.isSafeInteger(page) ||
+      page < 1 ||
+      pagination.totalPages < 1 ||
+      page > pagination.totalPages
+    ) {
+      return;
+    }
+
+    navigateToState({ ...catalogState, page });
     scrollToProductListTop();
   };
 
@@ -476,9 +463,10 @@ export default function CategoryPageClient({
       <div className="grid gap-5 md:grid-cols-[280px_minmax(0,1fr)]">
         <div className="hidden md:block">
           <ProductFilterSidebar
-            filters={filters}
+            filters={catalogState.filters}
             capacityOptions={capacityOptions}
             colorOptions={colorOptions}
+            ramOptions={ramOptions}
             onChange={handleFilterChange}
             onClear={handleClearFilters}
           />
@@ -489,13 +477,13 @@ export default function CategoryPageClient({
 
           <CategorySortBar
             totalProducts={pagination.totalItems}
-            sortValue={sortValue}
+            sortValue={catalogState.sort}
             onSortChange={handleSortChange}
             onOpenMobileFilter={() => setIsMobileFilterOpen(true)}
           />
 
           <ActiveFilterChips
-            filters={filters}
+            filters={catalogState.filters}
             totalProducts={pagination.totalItems}
             categoryName={category.name}
             onRemoveFilter={handleRemoveFilter}
@@ -503,9 +491,7 @@ export default function CategoryPageClient({
           />
 
           {isLoading && (
-            <div className="rounded-xl border border-outline-variant bg-surface p-8 text-center text-body-md text-on-surface-variant">
-              Đang tải sản phẩm...
-            </div>
+            <CategoryProductGrid products={[]} isLoading />
           )}
 
           {!isLoading && errorMessage && (
@@ -515,7 +501,7 @@ export default function CategoryPageClient({
           )}
 
           {!isLoading && !errorMessage && (
-            <CategoryProductGrid products={visibleProducts} />
+            <CategoryProductGrid products={products} />
           )}
 
           {!isLoading && !errorMessage && (
@@ -544,11 +530,12 @@ export default function CategoryPageClient({
             </div>
 
             <ProductFilterSidebar
-              filters={filters}
+              filters={catalogState.filters}
               capacityOptions={capacityOptions}
               colorOptions={colorOptions}
-              onChange={(nextFilters) => {
-                handleFilterChange(nextFilters);
+              ramOptions={ramOptions}
+              onChange={(filters) => {
+                handleFilterChange(filters);
                 setIsMobileFilterOpen(false);
               }}
               onClear={() => {

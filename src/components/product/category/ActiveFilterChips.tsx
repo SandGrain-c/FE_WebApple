@@ -2,9 +2,9 @@ import type { ProductFilters } from "./ProductFilterSidebar";
 
 export type RemoveFilterPayload =
   | { type: "price" }
-  | { type: "capacity"; value: string }
-  | { type: "color"; value: string }
-  | { type: "stockStatus" };
+  | { type: "capacity" }
+  | { type: "color" }
+  | { type: "ram" };
 
 type ActiveFilterChipsProps = {
   filters: ProductFilters;
@@ -20,11 +20,6 @@ const priceRangeLabelMap: Record<string, string> = {
   "over-25": "Trên 25 triệu",
 };
 
-const stockStatusLabelMap: Record<string, string> = {
-  "in-stock": "Còn hàng",
-  "out-of-stock": "Hết hàng",
-};
-
 function formatPrice(price: number | "") {
   if (price === "") return "";
 
@@ -35,17 +30,9 @@ function getCustomPriceLabel(minPrice: number | "", maxPrice: number | "") {
   const min = formatPrice(minPrice);
   const max = formatPrice(maxPrice);
 
-  if (min && max) {
-    return `${min} - ${max}`;
-  }
-
-  if (min) {
-    return `Từ ${min}`;
-  }
-
-  if (max) {
-    return `Đến ${max}`;
-  }
+  if (min && max) return `${min} - ${max}`;
+  if (min) return `Từ ${min}`;
+  if (max) return `Đến ${max}`;
 
   return "Khoảng giá tuỳ chỉnh";
 }
@@ -60,42 +47,37 @@ export default function ActiveFilterChips({
   const chips: { id: string; label: string; onRemove: () => void }[] = [];
 
   if (filters.priceRange !== "all") {
-    if (filters.priceRange === "custom") {
-      chips.push({
-        id: "price-custom",
-        label: getCustomPriceLabel(filters.minPrice, filters.maxPrice),
-        onRemove: () => onRemoveFilter({ type: "price" }),
-      });
-    } else {
-      chips.push({
-        id: "price-range",
-        label: priceRangeLabelMap[filters.priceRange] ?? "Khoảng giá",
-        onRemove: () => onRemoveFilter({ type: "price" }),
-      });
-    }
+    chips.push({
+      id: "price",
+      label:
+        filters.priceRange === "custom"
+          ? getCustomPriceLabel(filters.minPrice, filters.maxPrice)
+          : (priceRangeLabelMap[filters.priceRange] ?? "Khoảng giá"),
+      onRemove: () => onRemoveFilter({ type: "price" }),
+    });
   }
 
-  filters.capacities.forEach((capacity) => {
+  if (filters.capacity) {
     chips.push({
-      id: `capacity-${capacity}`,
-      label: capacity,
-      onRemove: () => onRemoveFilter({ type: "capacity", value: capacity }),
+      id: "capacity",
+      label: filters.capacity,
+      onRemove: () => onRemoveFilter({ type: "capacity" }),
     });
-  });
+  }
 
-  filters.colors.forEach((color) => {
+  if (filters.color) {
     chips.push({
-      id: `color-${color}`,
-      label: color,
-      onRemove: () => onRemoveFilter({ type: "color", value: color }),
+      id: "color",
+      label: filters.color,
+      onRemove: () => onRemoveFilter({ type: "color" }),
     });
-  });
+  }
 
-  if (filters.stockStatus !== "all") {
+  if (filters.ram) {
     chips.push({
-      id: "stock-status",
-      label: stockStatusLabelMap[filters.stockStatus] ?? "Tình trạng hàng",
-      onRemove: () => onRemoveFilter({ type: "stockStatus" }),
+      id: "ram",
+      label: filters.ram,
+      onRemove: () => onRemoveFilter({ type: "ram" }),
     });
   }
 
@@ -126,8 +108,7 @@ export default function ActiveFilterChips({
       )}
 
       <p className="text-body-md text-on-surface">
-        Tìm thấy{" "}
-        <span className="font-bold text-primary">{totalProducts}</span>{" "}
+        Tìm thấy <span className="font-bold text-primary">{totalProducts}</span>{" "}
         sản phẩm trong danh mục{" "}
         <span className="font-bold">{categoryName}</span>
       </p>
