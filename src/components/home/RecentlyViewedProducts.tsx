@@ -154,7 +154,7 @@ export default function RecentlyViewedProducts() {
                 spaceBetween: 16,
               },
             }}
-            className="!pb-1"
+            className="pb-1!"
           >
             {products.map((product) => (
               <SwiperSlide key={product.id} className="h-auto">

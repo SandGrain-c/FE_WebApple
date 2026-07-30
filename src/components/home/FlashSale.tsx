@@ -12,11 +12,11 @@ import 'swiper/css/navigation';
 
 // MOCK DATA: Sản phẩm (Giữ nguyên)
 const mockProducts = [
-  { id: 1, name: 'Laptop Asus Zenbook 14 OLED UX3407QA...', image: '/sale/flash-sale-1.webp', salePrice: '27.830.000đ', originalPrice: '31.990.000đ', discount: '-13%', stock: 'Còn 5/5 suất' },
-  { id: 2, name: 'Laptop Acer Gaming Nitro ProPanel...', image: '/sale/flash-sale-1.webp', salePrice: '23.990.000đ', originalPrice: '30.990.000đ', discount: '-23%', stock: 'Còn 5/5 suất' },
-  { id: 3, name: 'Laptop Acer', image: '/sale/flash-sale-1.webp', salePrice: '31.990.000đ', originalPrice: '41.990.000đ', discount: '-24%', stock: 'Còn 5/5 suất' },
-  { id: 4, name: 'Laptop MSI Gaming Cyborg 15 i5 13420H Siêu mạnh mẽ', image: '/sale/flash-sale-1.webp', salePrice: '31.990.000đ', originalPrice: '37.490.000đ', discount: '-15%', stock: 'Còn 5/5 suất' },
-  { id: 5, name: 'Laptop Asus Vivobook S14...', image: '/sale/flash-sale-1.webp', salePrice: '22.454.000đ', originalPrice: '25.990.000đ', discount: '-14%', stock: 'Còn 5/5 suất' }
+  { id: 1, name: 'Laptop Asus Zenbook 14 OLED UX3407QA...', image: '', salePrice: '27.830.000đ', originalPrice: '31.990.000đ', discount: '-13%', stock: 'Còn 5/5 suất' },
+  { id: 2, name: 'Laptop Acer Gaming Nitro ProPanel...', image: '', salePrice: '23.990.000đ', originalPrice: '30.990.000đ', discount: '-23%', stock: 'Còn 5/5 suất' },
+  { id: 3, name: 'Laptop Acer', image: '', salePrice: '31.990.000đ', originalPrice: '41.990.000đ', discount: '-24%', stock: 'Còn 5/5 suất' },
+  { id: 4, name: 'Laptop MSI Gaming Cyborg 15 i5 13420H Siêu mạnh mẽ', image: '', salePrice: '31.990.000đ', originalPrice: '37.490.000đ', discount: '-15%', stock: 'Còn 5/5 suất' },
+  { id: 5, name: 'Laptop Asus Vivobook S14...', image: '', salePrice: '22.454.000đ', originalPrice: '25.990.000đ', discount: '-14%', stock: 'Còn 5/5 suất' }
 ];
 
 const FlashSale = () => {
@@ -28,7 +28,7 @@ const FlashSale = () => {
         
         {/* BANNER */}
         <div className="relative overflow-hidden px-2 md:px-0">
-          <div className="hidden md:block relative w-full h-[120px]">
+          <div className="hidden md:block relative w-full h-30">
             <Image src="/sale/flash-sale-1.webp" alt="Flash Sale" fill priority className="object-contain" />
           </div>
         </div>
@@ -60,26 +60,44 @@ const FlashSale = () => {
             <Swiper
               modules={[Navigation]}
               spaceBetween={12} // Tương đương gap-3
-              slidesPerView="auto" // Cho phép slide có kích thước tự do theo class Tailwind
+              slidesPerGroup={1} // Cho phép slide có kích thước tự do theo class Tailwind
               navigation={{
                 nextEl: '.swiper-btn-next',
                 prevEl: '.swiper-btn-prev',
               }}
-              className="!pb-2" // Đệm dưới một chút để không bị cắt mất shadow khi hover
+              breakpoints={{
+              0: {
+                slidesPerView: 2.05,
+                spaceBetween: 8,
+              },
+              640: {
+                slidesPerView: 3,
+                spaceBetween: 12,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 14,
+              },
+              1280: {
+                slidesPerView: 5,
+                spaceBetween: 16,
+              },
+            }}
+              className="pb-2!" // Đệm dưới một chút để không bị cắt mất shadow khi hover
             >
               {mockProducts.map((product) => (
-                <SwiperSlide key={product.id} className="!w-[180px] md:!w-[200px] h-auto">
+                <SwiperSlide key={product.id} className="w-45! md:w-50! h-auto">
                   {/* PRODUCT CARD: Ép h-full để giãn đều theo SwiperSlide */}
                   <div className="bg-surface border border-surface-container-high rounded-xl p-2.5 flex flex-col hover:shadow-md transition-shadow h-full">
                     
-                    <div className="relative w-full aspect-square mb-3 flex-shrink-0">
+                    <div className="relative w-full aspect-square mb-3 shrink-0">
                       <Image src={product.image} alt={product.name} fill className="object-contain" />
-                      <div className="absolute -bottom-2 left-0 right-0 mx-auto w-[85%] bg-gradient-to-r from-[#ff4e00] to-[#fec800] text-white text-[10px] font-bold py-0.5 px-1 rounded-full flex items-center justify-center border border-white">
+                      <div className="absolute -bottom-2 left-0 right-0 mx-auto w-[85%] bg-linear-to-r from-[#ff4e00] to-[#fec800] text-white text-[10px] font-bold py-0.5 px-1 rounded-full flex items-center justify-center border border-white">
                         <span className="mr-1">⚡</span> {product.stock}
                       </div>
                     </div>
 
-                    <div className="flex items-end mt-1 h-[24px] flex-shrink-0">
+                    <div className="flex items-end mt-1 h-[24px] shrink-0">
                       <div className="bg-primary text-on-primary text-label-md md:text-body-md font-bold px-1.5 py-0.5 flex-1 text-center rounded-l-sm truncate">
                         {product.salePrice}
                       </div>
@@ -88,15 +106,15 @@ const FlashSale = () => {
                       </div>
                     </div>
 
-                    <div className="text-secondary text-[11px] line-through mt-1 h-[16px] flex-shrink-0">
+                    <div className="text-secondary text-[11px] line-through mt-1 h-4 shrink-0">
                       {product.originalPrice}
                     </div>
 
-                    <h3 className="text-label-md text-on-surface font-medium line-clamp-2 mt-1.5 mb-2 leading-tight h-[36px] flex-shrink-0">
+                    <h3 className="text-label-md text-on-surface font-medium line-clamp-2 mt-1.5 mb-2 leading-tight h-9 shrink-0">
                       {product.name}
                     </h3>
 
-                    <button className="w-full mt-auto bg-primary text-on-primary text-label-sm font-bold py-1.5 rounded-full hover:bg-primary-container transition-colors flex-shrink-0">
+                    <button className="w-full mt-auto bg-primary text-on-primary text-label-sm font-bold py-1.5 rounded-full hover:bg-primary-container transition-colors shrink-0">
                       Mua ngay
                     </button>
                   </div>

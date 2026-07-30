@@ -1,0 +1,619 @@
+// src/components/admin/auth/AdminLoginPageClient.tsx
+
+"use client";
+
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+
+import { useAdminAuthStore } from "@/store/admin-auth.store";
+
+function getSafeAdminRedirectPath(redirect: string | null) {
+  if (!redirect) {
+    return "/admin";
+  }
+
+  if (!redirect.startsWith("/") || redirect.startsWith("//")) {
+    return "/admin";
+  }
+
+  if (!redirect.startsWith("/admin")) {
+    return "/admin";
+  }
+
+  if (redirect.startsWith("/admin/login")) {
+    return "/admin";
+  }
+
+  return redirect;
+}
+
+type AdminLoginFormErrors = {
+  identifier?: string;
+  password?: string;
+};
+
+type AdminLoginToastVariant = "error" | "success" | "info";
+
+type AdminLoginToast = {
+  id: number;
+  title: string;
+  description?: string;
+  variant: AdminLoginToastVariant;
+};
+
+type AdminLoginToastStackProps = {
+  toasts: AdminLoginToast[];
+  onClose: (id: number) => void;
+};
+
+function AdminLoginToastStack({
+  toasts,
+  onClose,
+}: AdminLoginToastStackProps) {
+  if (toasts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="pointer-events-none fixed inset-x-4 top-4 z-[9999] mx-auto flex max-w-[560px] flex-col gap-3 sm:top-6">
+      {toasts.map((toast) => {
+        const isError = toast.variant === "error";
+        const isSuccess = toast.variant === "success";
+
+        const iconName = isError ? "close" : isSuccess ? "check" : "info";
+
+        const colorClass = isError
+          ? "border-red-400 bg-red-50 text-red-600"
+          : isSuccess
+            ? "border-green-400 bg-green-50 text-green-600"
+            : "border-primary/40 bg-white text-primary";
+
+        const iconClass = isError
+          ? "border-red-500 text-red-500"
+          : isSuccess
+            ? "border-green-500 text-green-500"
+            : "border-primary text-primary";
+
+        return (
+          <div
+            key={toast.id}
+            className={`pointer-events-auto w-full rounded-2xl border p-4 shadow-[0_18px_60px_rgba(15,23,42,0.16)] backdrop-blur [animation:admin-login-toast-down_220ms_ease-out_both] ${colorClass}`}
+          >
+            <div className="flex min-w-0 items-start gap-3">
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white ${iconClass}`}
+              >
+                <span className="material-symbols-outlined text-xl">
+                  {iconName}
+                </span>
+              </div>
+
+              <div className="min-w-0 flex-1 pt-0.5">
+                <p className="break-words text-base font-bold leading-6">
+                  {toast.title}
+                </p>
+
+                {toast.description ? (
+                  <p className="mt-1 break-words text-sm leading-5 text-on-surface">
+                    {toast.description}
+                  </p>
+                ) : null}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onClose(toast.id)}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-on-surface transition hover:bg-white hover:text-primary"
+                aria-label="Đóng thông báo"
+              >
+                <span className="material-symbols-outlined text-xl">
+                  close
+                </span>
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function AdminLoginPageClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const redirectPath = useMemo(() => {
+    return getSafeAdminRedirectPath(searchParams.get("redirect"));
+  }, [searchParams]);
+
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [errors, setErrors] = useState<AdminLoginFormErrors>({});
+  const [touched, setTouched] = useState({
+    identifier: false,
+    password: false,
+  });
+
+  const [toasts, setToasts] = useState<AdminLoginToast[]>([]);
+
+  const adminUser = useAdminAuthStore((state) => state.adminUser);
+  const isAdminAuthenticated = useAdminAuthStore(
+    (state) => state.isAdminAuthenticated
+  );
+  const isLoading = useAdminAuthStore((state) => state.isLoading);
+  const hasHydrated = useAdminAuthStore((state) => state.hasHydrated);
+  const login = useAdminAuthStore((state) => state.login);
+  const clearError = useAdminAuthStore((state) => state.clearError);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+  useEffect(() => {
+    if (hasHydrated && isAdminAuthenticated && adminUser) {
+      router.replace(redirectPath);
+    }
+  }, [
+    hasHydrated,
+    isAdminAuthenticated,
+    adminUser,
+    redirectPath,
+    router,
+  ]);
+
+  function closeToast(id: number) {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }
+
+  function showToast(
+    variant: AdminLoginToastVariant,
+    title: string,
+    description?: string
+  ) {
+    const id = Date.now() + Math.random();
+
+    setToasts((current) => [
+      {
+        id,
+        title,
+        description,
+        variant,
+      },
+      ...current.slice(0, 2),
+    ]);
+
+    window.setTimeout(() => {
+      closeToast(id);
+    }, 3500);
+  }
+
+  function validateForm(values: {
+    identifier: string;
+    password: string;
+  }): AdminLoginFormErrors {
+    const nextErrors: AdminLoginFormErrors = {};
+    const trimmedIdentifier = values.identifier.trim();
+
+    if (!trimmedIdentifier) {
+      nextErrors.identifier =
+        "Vui lòng nhập tên đăng nhập, email hoặc số điện thoại.";
+    } else if (trimmedIdentifier.length < 3) {
+      nextErrors.identifier = "Tài khoản cần có ít nhất 3 ký tự.";
+    }
+
+    if (!values.password) {
+      nextErrors.password = "Vui lòng nhập mật khẩu.";
+    } else if (values.password.length < 6) {
+      nextErrors.password = "Mật khẩu cần có ít nhất 6 ký tự.";
+    }
+
+    return nextErrors;
+  }
+
+  function handleIdentifierChange(value: string) {
+    setIdentifier(value);
+    clearError();
+
+    if (touched.identifier) {
+      setErrors(
+        validateForm({
+          identifier: value,
+          password,
+        })
+      );
+    }
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value);
+    clearError();
+
+    if (touched.password) {
+      setErrors(
+        validateForm({
+          identifier,
+          password: value,
+        })
+      );
+    }
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const nextErrors = validateForm({
+      identifier,
+      password,
+    });
+
+    setTouched({
+      identifier: true,
+      password: true,
+    });
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      const firstError = nextErrors.identifier || nextErrors.password;
+
+      showToast(
+        "error",
+        "Thông tin đăng nhập chưa hợp lệ",
+        firstError || "Vui lòng kiểm tra lại tài khoản và mật khẩu."
+      );
+
+      return;
+    }
+
+    const result = await login(identifier.trim(), password);
+
+    if (!result.success) {
+      showToast(
+        "error",
+        "Đăng nhập quản trị thất bại",
+        result.message || "Tài khoản hoặc mật khẩu không chính xác."
+      );
+
+      return;
+    }
+
+    showToast(
+      "success",
+      "Đăng nhập quản trị thành công",
+      "Đang chuyển vào trang quản trị."
+    );
+
+    router.replace(redirectPath);
+  }
+
+  function handleUseTestAccount() {
+    setIdentifier("admin01");
+    setPassword("123456");
+    setErrors({});
+    setTouched({
+      identifier: false,
+      password: false,
+    });
+    clearError();
+
+    showToast(
+      "info",
+      "Đã điền tài khoản admin test",
+      "Bạn có thể đổi lại theo tài khoản Admin thực tế trong database."
+    );
+  }
+
+  const identifierError = touched.identifier ? errors.identifier : undefined;
+  const passwordError = touched.password ? errors.password : undefined;
+
+  return (
+    <main className="fixed inset-0 overflow-hidden bg-[#f6f6f7]">
+      <AdminLoginToastStack toasts={toasts} onClose={closeToast} />
+
+      <section className="mx-auto flex h-full w-full max-w-7xl p-3 sm:p-4 lg:p-5">
+        <div className="grid h-full min-h-0 w-full overflow-hidden rounded-[28px] border border-surface-container-high bg-white shadow-[0_20px_70px_rgba(15,23,42,0.08)] lg:grid-cols-[1fr_0.95fr]">
+          {/* LEFT PANEL */}
+          <div className="relative hidden min-h-0 overflow-hidden bg-gradient-to-br from-white via-[#fff7f8] to-[#f8f8f9] p-8 lg:flex lg:flex-col xl:p-12">
+            <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 right-8 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <Link
+                href="/"
+                className="inline-flex w-fit items-center gap-2 text-sm font-medium text-primary transition hover:gap-3"
+              >
+                <span className="material-symbols-outlined text-lg">
+                  arrow_back
+                </span>
+                Về trang bán hàng
+              </Link>
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white/80 px-5 py-2.5 text-sm font-bold text-primary shadow-sm backdrop-blur">
+                <span className="material-symbols-outlined text-lg">
+                  admin_panel_settings
+                </span>
+                Admin Panel
+              </div>
+            </div>
+
+            <div className="relative z-10 flex flex-1 items-center">
+              <div>
+                <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-primary shadow-sm">
+                  <span className="material-symbols-outlined text-lg">
+                    verified_user
+                  </span>
+                  Quản trị hệ thống Đức Bách Hoá
+                </p>
+
+                <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-on-surface xl:text-5xl 2xl:text-6xl">
+                  Đăng nhập để quản lý sản phẩm, danh mục, banner và kho hàng.
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT PANEL */}
+          <div className="flex min-h-0 items-center justify-center overflow-hidden p-3 sm:p-4 lg:p-6">
+            <div className="w-full max-w-[460px] rounded-[24px] border border-surface-container-high bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.06)] [animation:admin-auth-fade-up_500ms_ease-out_both] sm:p-6">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary lg:hidden"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    arrow_back
+                  </span>
+                  Trang bán hàng
+                </Link>
+
+                <div className="ml-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-on-primary shadow-sm">
+                  <span className="material-symbols-outlined text-xl">
+                    admin_panel_settings
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-primary">
+                  Đức Bách Hoá Admin
+                </p>
+
+                <h2 className="mt-1 text-2xl font-bold text-on-surface">
+                  Đăng nhập quản trị
+                </h2>
+
+                <p className="mt-1 text-sm leading-5 text-secondary">
+                  Chỉ tài khoản Admin hoặc Staff được phép truy cập khu vực này.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="mt-5 space-y-3">
+                <div>
+                  <label
+                    htmlFor="admin-identifier"
+                    className="mb-1.5 block text-sm font-semibold text-on-surface"
+                  >
+                    Tài khoản quản trị
+                  </label>
+
+                  <div
+                    className={`flex items-center gap-3 rounded-2xl border bg-surface-container-lowest px-4 transition duration-300 focus-within:bg-white focus-within:ring-4 ${
+                      identifierError
+                        ? "border-red-300 focus-within:border-red-500 focus-within:ring-red-100"
+                        : "border-surface-container-high focus-within:border-primary focus-within:ring-primary/10"
+                    }`}
+                  >
+                    <span
+                      className={`material-symbols-outlined text-xl ${
+                        identifierError ? "text-red-500" : "text-secondary"
+                      }`}
+                    >
+                      alternate_email
+                    </span>
+
+                    <input
+                      id="admin-identifier"
+                      type="text"
+                      value={identifier}
+                      onChange={(event) =>
+                        handleIdentifierChange(event.target.value)
+                      }
+                      onBlur={() => {
+                        setTouched((current) => ({
+                          ...current,
+                          identifier: true,
+                        }));
+                        setErrors(
+                          validateForm({
+                            identifier,
+                            password,
+                          })
+                        );
+                      }}
+                      disabled={isLoading}
+                      placeholder="Ví dụ: admin01"
+                      className="h-12 min-w-0 flex-1 bg-transparent text-sm text-on-surface outline-none placeholder:text-secondary disabled:cursor-not-allowed"
+                      autoComplete="username"
+                    />
+                  </div>
+
+                  {identifierError ? (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600">
+                      <span className="material-symbols-outlined text-base">
+                        error
+                      </span>
+                      {identifierError}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="admin-password"
+                    className="mb-1.5 block text-sm font-semibold text-on-surface"
+                  >
+                    Mật khẩu
+                  </label>
+
+                  <div
+                    className={`flex items-center gap-3 rounded-2xl border bg-surface-container-lowest px-4 transition duration-300 focus-within:bg-white focus-within:ring-4 ${
+                      passwordError
+                        ? "border-red-300 focus-within:border-red-500 focus-within:ring-red-100"
+                        : "border-surface-container-high focus-within:border-primary focus-within:ring-primary/10"
+                    }`}
+                  >
+                    <span
+                      className={`material-symbols-outlined text-xl ${
+                        passwordError ? "text-red-500" : "text-secondary"
+                      }`}
+                    >
+                      lock
+                    </span>
+
+                    <input
+                      id="admin-password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(event) =>
+                        handlePasswordChange(event.target.value)
+                      }
+                      onBlur={() => {
+                        setTouched((current) => ({
+                          ...current,
+                          password: true,
+                        }));
+                        setErrors(
+                          validateForm({
+                            identifier,
+                            password,
+                          })
+                        );
+                      }}
+                      disabled={isLoading}
+                      placeholder="Nhập mật khẩu"
+                      className="h-12 min-w-0 flex-1 bg-transparent text-sm text-on-surface outline-none placeholder:text-secondary disabled:cursor-not-allowed"
+                      autoComplete="current-password"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((current) => !current)}
+                      disabled={isLoading}
+                      className="text-secondary transition hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    >
+                      <span className="material-symbols-outlined text-xl">
+                        {showPassword ? "visibility_off" : "visibility"}
+                      </span>
+                    </button>
+                  </div>
+
+                  {passwordError ? (
+                    <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600">
+                      <span className="material-symbols-outlined text-base">
+                        error
+                      </span>
+                      {passwordError}
+                    </p>
+                  ) : null}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || !hasHydrated}
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-semibold text-on-primary transition duration-300 hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-xl">
+                        progress_activity
+                      </span>
+                      Đang đăng nhập...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-xl">
+                        login
+                      </span>
+                      Đăng nhập Admin
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* <div className="mt-4 rounded-2xl border border-surface-container-high bg-surface-container-lowest p-3">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
+                      Tài khoản test
+                    </p>
+                    <p className="mt-0.5 text-xs text-secondary">
+                      Chỉ dùng nếu DB đã có admin01.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleUseTestAccount}
+                    disabled={isLoading}
+                    className="shrink-0 rounded-xl border border-primary px-3 py-2 text-xs font-semibold text-primary transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Điền nhanh
+                  </button>
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+                  <div className="rounded-xl bg-white px-3 py-2">
+                    <span className="block text-secondary">Identifier</span>
+                    <span className="font-semibold text-on-surface">
+                      admin01
+                    </span>
+                  </div>
+
+                  <div className="rounded-xl bg-white px-3 py-2">
+                    <span className="block text-secondary">Password</span>
+                    <span className="font-semibold text-on-surface">
+                      123456
+                    </span>
+                  </div>
+                </div>
+              </div> */}
+
+              {/* <p className="mt-4 text-center text-xs leading-5 text-secondary">
+                Không có chức năng đăng ký Admin công khai. Tài khoản quản trị
+                cần được tạo từ database hoặc seed.
+              </p> */}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style jsx global>{`
+        @keyframes admin-auth-fade-up {
+          from {
+            opacity: 0;
+            transform: translateY(18px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes admin-login-toast-down {
+          from {
+            opacity: 0;
+            transform: translateY(-18px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+      `}</style>
+    </main>
+  );
+}
