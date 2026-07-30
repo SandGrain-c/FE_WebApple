@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e:smoke": "playwright test e2e/smoke",
+    "test:e2e:headed": "playwright test e2e/smoke --headed",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "next": "16.2.4",
@@ -16,6 +19,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
