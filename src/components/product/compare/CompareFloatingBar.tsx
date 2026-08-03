@@ -3,13 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useCompareHydration } from "@/hooks/useCompareHydration";
 import { useCompareStore } from "@/store/compare.store";
-const MAX_COMPARE_ITEMS = 4;
-
-type CompareUrlItem = {
-  categorySlug: string;
-  slug: string;
-};
+import { MAX_COMPARE_ITEMS } from "@/store/compare.store";
+import { COMPARE_ROUTE } from "@/lib/compare/compare-route";
 
 type MaterialIconProps = {
   name: string;
@@ -27,28 +24,18 @@ function MaterialIcon({ name, className = "" }: MaterialIconProps) {
   );
 }
 
-function buildCompareUrl(items: CompareUrlItem[]) {
-  if (items.length === 0) return "/so-sanh-san-pham";
-
-  const compareValue = items
-    .map((item) => `${item.categorySlug}/${item.slug}`)
-    .join("-vs-");
-
-  return `/so-sanh-san-pham?sp=${encodeURIComponent(compareValue)}`;
-}
-
 export default function CompareFloatingBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const hasHydrated = useCompareHydration();
 
   const items = useCompareStore((state) => state.items);
   const removeFromCompare = useCompareStore((state) => state.removeFromCompare);
   const clearCompare = useCompareStore((state) => state.clearCompare);
 
   const totalItems = items.length;
-  const compareUrl = buildCompareUrl(items);
   const currentCategorySlug = items[0]?.categorySlug;
 
-  if (totalItems === 0) return null;
+  if (!hasHydrated || totalItems === 0) return null;
 
   return (
     <div className="fixed bottom-3 left-1/2 z-50 w-[calc(100%-20px)] max-w-[1180px] -translate-x-1/2">
@@ -129,18 +116,24 @@ export default function CompareFloatingBar() {
                 <span>Xóa tất cả</span>
               </button>
 
-              <Link
-                href={compareUrl}
-                className={[
-                  "flex h-[46px] items-center justify-center gap-1.5 rounded-xl px-4 text-center text-sm font-bold text-white transition",
-                  totalItems >= 2
-                    ? "bg-primary hover:opacity-90"
-                    : "pointer-events-none bg-primary/45 opacity-60",
-                ].join(" ")}
-              >
-                <MaterialIcon name="compare" className="text-[20px]" />
-                <span>So sánh ngay</span>
-              </Link>
+              {totalItems >= 2 ? (
+                <Link
+                  href={COMPARE_ROUTE}
+                  className="flex h-[46px] items-center justify-center gap-1.5 rounded-xl bg-primary px-4 text-center text-sm font-bold text-white transition hover:opacity-90"
+                >
+                  <MaterialIcon name="compare" className="text-[20px]" />
+                  <span>So sánh ngay</span>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="flex h-[46px] cursor-not-allowed items-center justify-center gap-1.5 rounded-xl bg-primary/45 px-4 text-center text-sm font-bold text-white opacity-60"
+                >
+                  <MaterialIcon name="compare" className="text-[20px]" />
+                  <span>So sánh ngay</span>
+                </button>
+              )}
 
               <button
                 type="button"

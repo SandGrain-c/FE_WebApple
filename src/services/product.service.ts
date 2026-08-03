@@ -10,6 +10,10 @@ type GetProductsOptions = {
   signal?: AbortSignal;
 };
 
+type GetProductDetailOptions = {
+  signal?: AbortSignal;
+};
+
 function appendTextParam(
   searchParams: URLSearchParams,
   key: string,
@@ -86,12 +90,14 @@ export async function getProducts(
 
 export async function getProductDetail(
   categorySlug: string,
-  productSlug: string
+  productSlug: string,
+  options: GetProductDetailOptions = {},
 ): Promise<ProductDetailResponse | null> {
   const res = await fetch(
     `${API_URL}/products/${categorySlug}/${productSlug}`,
     {
       cache: "no-store",
+      signal: options.signal,
     }
   );
 
