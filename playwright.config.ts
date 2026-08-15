@@ -9,12 +9,6 @@ if (!e2eDatabaseUrl) {
 
 const frontendDirectory = process.cwd();
 const backendDirectory = path.resolve(frontendDirectory, "../BE");
-const frontendPort = process.env.E2E_FRONTEND_PORT || "3000";
-const customerApiPort = process.env.E2E_CUSTOMER_API_PORT || "5001";
-const adminApiPort = process.env.E2E_ADMIN_API_PORT || "5002";
-const frontendUrl = `http://localhost:${frontendPort}`;
-const customerApiUrl = `http://localhost:${customerApiPort}`;
-const adminApiUrl = `http://localhost:${adminApiPort}`;
 const sharedBackendEnvironment = {
   DATABASE_URL: e2eDatabaseUrl,
   JWT_SECRET:
@@ -22,8 +16,8 @@ const sharedBackendEnvironment = {
     "webapple-e2e-jwt-secret-change-for-shared-environments",
   E2E_ACCOUNT_PASSWORD:
     process.env.E2E_ACCOUNT_PASSWORD || "WebAppleE2E!2026",
-  CLIENT_URL: frontendUrl,
-  ADMIN_CLIENT_URL: frontendUrl,
+  CLIENT_URL: "http://localhost:3000",
+  ADMIN_CLIENT_URL: "http://localhost:3000",
 };
 
 export default defineConfig({
@@ -43,7 +37,7 @@ export default defineConfig({
     ["html", { outputFolder: "playwright-report", open: "never" }],
   ],
   use: {
-    baseURL: frontendUrl,
+    baseURL: "http://localhost:3000",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -62,9 +56,9 @@ export default defineConfig({
       cwd: backendDirectory,
       env: {
         ...sharedBackendEnvironment,
-        CUSTOMER_API_PORT: customerApiPort,
+        CUSTOMER_API_PORT: "5001",
       },
-      url: `${customerApiUrl}/api/health`,
+      url: "http://localhost:5001/api/health",
       reuseExistingServer: false,
       timeout: 120_000,
     },
@@ -73,22 +67,20 @@ export default defineConfig({
       cwd: backendDirectory,
       env: {
         ...sharedBackendEnvironment,
-        ADMIN_API_PORT: adminApiPort,
+        ADMIN_API_PORT: "5002",
       },
-      url: `${adminApiUrl}/api/admin/health`,
+      url: "http://localhost:5002/api/admin/health",
       reuseExistingServer: false,
       timeout: 120_000,
     },
     {
-      command: `npm run dev -- -p ${frontendPort}`,
+      command: "npm run dev",
       cwd: frontendDirectory,
       env: {
-        PORT: frontendPort,
-        NEXT_DIST_DIR: ".next-e2e",
-        NEXT_PUBLIC_API_URL: `${customerApiUrl}/api`,
-        NEXT_PUBLIC_ADMIN_API_URL: `${adminApiUrl}/api/admin`,
+        NEXT_PUBLIC_API_URL: "http://localhost:5001/api",
+        NEXT_PUBLIC_ADMIN_API_URL: "http://localhost:5002/api/admin",
       },
-      url: frontendUrl,
+      url: "http://localhost:3000",
       reuseExistingServer: false,
       timeout: 120_000,
     },
