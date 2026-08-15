@@ -11,6 +11,11 @@ import {
   SkeletonBox,
   SkeletonLine,
 } from "@/components/common/loading/Skeleton";
+import {
+  MAIN_CATEGORIES,
+  type MainCategory,
+} from "@/config/navigation";
+import { getProducts } from "@/services/product.service";
 
 import type { ProductCardItem } from "@/types/product.type";
 
@@ -30,121 +35,26 @@ type HomeProductCategoryConfig = {
 type HomeProductSection = HomeProductCategoryConfig & {
   products: ProductCardItem[];
 };
-// API URL để gọi dữ liệu sản phẩm
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001/api";
+const HOME_CATEGORY_DESCRIPTIONS: Record<MainCategory["slug"], string> = {
+  iphone: "Các mẫu iPhone chính hãng, giá tốt",
+  macbook: "MacBook Air, MacBook Pro hiệu năng cao",
+  ipad: "iPad học tập, làm việc và giải trí",
+  "apple-watch": "Đồng hồ Apple Watch chính hãng",
+  camera: "Camera và thiết bị ghi hình chính hãng",
+  "am-thanh": "Thiết bị âm thanh chất lượng cao",
+  imac: "iMac mạnh mẽ cho công việc và sáng tạo",
+  "phu-kien": "Phụ kiện chính hãng cho các sản phẩm Apple",
+};
 
-// danh sách các danh mục sản phẩm trên trang chủ
-const HOME_PRODUCT_CATEGORIES: HomeProductCategoryConfig[] = [
-  {
-    id: "iphone",
-    title: "iPhone",
-    description: "Các mẫu iPhone chính hãng, giá tốt",
-    categorySlug: "iphone",
-    viewAllHref: "/iphone",
+const HOME_PRODUCT_CATEGORIES: HomeProductCategoryConfig[] =
+  MAIN_CATEGORIES.map((category) => ({
+    id: category.slug,
+    title: category.name,
+    description: HOME_CATEGORY_DESCRIPTIONS[category.slug],
+    categorySlug: category.slug,
+    viewAllHref: `/${category.slug}`,
     limit: 8,
-  },
-  {
-    id: "macbook",
-    title: "MacBook",
-    description: "MacBook Air, MacBook Pro hiệu năng cao",
-    categorySlug: "macbook",
-    viewAllHref: "/macbook",
-    limit: 8,
-  },
-  {
-    id: "ipad",
-    title: "iPad",
-    description: "iPad học tập, làm việc và giải trí",
-    categorySlug: "ipad",
-    viewAllHref: "/ipad",
-    limit: 8,
-  },
-  {
-    id: "apple-watch",
-    title: "Apple Watch",
-    description: "Đồng hồ Apple Watch chính hãng",
-    categorySlug: "apple-watch",
-    viewAllHref: "/apple-watch",
-    limit: 8,
-  },
-  {
-    id: "phukien",
-    title: "Phụ kiện",
-    description: "Phụ kiện chính hãng cho các sản phẩm Apple",
-    categorySlug: "phukien",
-    viewAllHref: "/phukien",
-    limit: 8,
-  },
-];
-
-// hàm trích xuất danh sách sản phẩm từ dữ liệu phản hồi của API
-function extractProductsFromResponse(responseData: unknown): ProductCardItem[] {
-  const data = responseData as {
-    data?: unknown;
-    items?: ProductCardItem[];
-    products?: ProductCardItem[];
-  };
-  // kiểm tra xem dữ liệu phản hồi có phải là mảng hay không
-  if (Array.isArray(responseData)) {
-    return responseData as ProductCardItem[];
-  }
-
-  if (Array.isArray(data.items)) {
-    return data.items;
-  }
-
-  if (Array.isArray(data.products)) {
-    return data.products;
-  }
-  // kiểm tra xem dữ liệu phản hồi có chứa trường data hay không
-  if (data.data) {
-    const nestedData = data.data as { 
-      items?: ProductCardItem[]; // 
-      products?: ProductCardItem[];
-    };
-    // kiểm tra xem dữ liệu lồng nhau có chứa danh sách sản phẩm hay không
-    if (Array.isArray(nestedData.items)) {
-      return nestedData.items;
-    }
-
-    if (Array.isArray(nestedData.products)) {
-      return nestedData.products;
-    }
-  }
-
-  return [];
-}
-// hàm gọi API để lấy danh sách sản phẩm theo danh mục
-async function fetchProductsByCategory(
-  categorySlug: string,
-  limit: number,
-  signal?: AbortSignal
-): Promise<ProductCardItem[]> {
-  const url = new URL(`${API_URL}/products`);
-
-  url.searchParams.set("category", categorySlug);
-  url.searchParams.set("page", "1"); // luôn lấy trang đầu tiên
-  url.searchParams.set("limit", String(limit)); // luôn giới hạn số lượng sản phẩm trả về
-  url.searchParams.set("sort", "newest"); // luôn lấy sản phẩm mới nhất
-
-  const response = await fetch(url.toString(), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal, // truyền signal để có thể hủy request nếu component unmount
-  });
-
-  const responseData = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      responseData?.message ?? "Không thể tải danh sách sản phẩm."
-    );
-  }
-
-  return extractProductsFromResponse(responseData);
-}
+  }));
 
 function ProductSectionsSkeleton() {
   return (
@@ -196,22 +106,38 @@ export default function Product() {
       setErrorMessage("");
 
       try {
-        const results = await Promise.all(
+        const results = await Promise.allSettled(
           HOME_PRODUCT_CATEGORIES.map(async (category) => {
-            const products = await fetchProductsByCategory(
-              category.categorySlug,
-              category.limit,
-              controller.signal
+            const data = await getProducts(
+              {
+                categorySlug: category.categorySlug,
+                page: 1,
+                limit: category.limit,
+                sort: "newest",
+              },
+              { signal: controller.signal },
             );
 
             return {
               ...category,
-              products,
+              products: data.items,
             };
-          })
+          }),
         );
 
-        setSections(results.filter((section) => section.products.length > 0));
+        if (controller.signal.aborted) return;
+
+        const successfulSections = results.flatMap((result) =>
+          result.status === "fulfilled" ? [result.value] : [],
+        );
+
+        setSections(
+          successfulSections.filter((section) => section.products.length > 0),
+        );
+
+        if (successfulSections.length === 0) {
+          setErrorMessage("Không thể tải sản phẩm trang chủ.");
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
           return;
@@ -310,7 +236,7 @@ export default function Product() {
                 {section.products.map((product) => (
                   <SwiperSlide key={product.id} className="h-auto!">
                     <div className="h-full">
-                      <ProductCard product={product} />
+                      <ProductCard product={product} showCompare />
                     </div>
                   </SwiperSlide>
                 ))}
