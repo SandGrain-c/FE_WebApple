@@ -5,6 +5,7 @@ import type { MouseEvent } from "react";
 import Link from "next/link";
 
 import FavoriteButton from "@/components/favorite/FavoriteButton";
+import { useCompareHydration } from "@/hooks/useCompareHydration";
 import { useCompareStore } from "@/store/compare.store";
 import type { ProductCardItem } from "@/types/product.type";
 
@@ -54,9 +55,11 @@ export default function ProductCard({
   showOptions = false,
   showCompare = false,
 }: ProductCardProps) {
+  const hasHydratedCompare = useCompareHydration();
   const addToCompare = useCompareStore((state) => state.addToCompare);
   const removeFromCompare = useCompareStore((state) => state.removeFromCompare);
   const isCompared = useCompareStore((state) => state.isCompared(product.id));
+  const isCompareSelected = hasHydratedCompare && isCompared;
 
   const productImage = product.image || "/sale/flash-sale-1.webp";
   const productHref = `/${product.categorySlug}/${product.slug}`;
@@ -65,7 +68,7 @@ export default function ProductCard({
     event.preventDefault();
     event.stopPropagation();
 
-    if (isCompared) {
+    if (isCompareSelected) {
       removeFromCompare(product.id);
       return;
     }
@@ -229,12 +232,12 @@ export default function ProductCard({
                 onClick={handleCompareClick}
                 className={[
                   "inline-flex items-center gap-1 text-label-md font-semibold transition hover:opacity-80",
-                  isCompared ? "text-primary" : "text-blue-600",
+                  isCompareSelected ? "text-primary" : "text-blue-600",
                 ].join(" ")}
               >
-                <span>{isCompared ? "✓" : "+"}</span>
+                <span>{isCompareSelected ? "✓" : "+"}</span>
                 <span>
-                  {isCompared ? "Đã thêm so sánh" : "Thêm vào so sánh"}
+                  {isCompareSelected ? "Đã thêm so sánh" : "Thêm vào so sánh"}
                 </span>
               </button>
             </div>

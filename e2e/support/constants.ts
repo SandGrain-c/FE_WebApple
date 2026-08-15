@@ -39,3 +39,10 @@ export const ADMIN_CREATED = {
   variantName: "E2E Admin Product 64GB Xanh",
   variantSku: "E2E-ADMIN-PRODUCT-64-GRN",
 } as const;
+
+export const COMPARE_CREATED = {
+  productName: "E2E iPhone Compare",
+  productSlug: "e2e-iphone-compare",
+  variantName: "E2E iPhone Compare 256GB Xanh",
+  variantSku: "E2E-IP-COMPARE-BLU-256",
+} as const;
