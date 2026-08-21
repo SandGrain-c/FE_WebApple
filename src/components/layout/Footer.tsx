@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer(){
     return(
         <footer className="bg-[#F5F5F7] dark:bg-zinc-900 w-[80%] mx-auto mt-20 border-t border-gray-200 dark:border-zinc-800">
@@ -23,7 +25,7 @@ export default function Footer(){
                 <div>
                     <h4 className="font-bold text-black dark:text-white mb-6 uppercase text-xs tracking-widest">Chính sách</h4>
                     <ul className="space-y-3">
-                        <li><a className="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Chính sách bảo hành</a></li>
+                        <li><Link className="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="/bao-hanh-chinh-hang">Chính sách bảo hành</Link></li>
                         <li><a className="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Giao hàng</a></li>
                         <li><a className="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Đổi trả hàng</a></li>
                         <li><a className="text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors" href="#">Bảo mật thông tin</a></li>
