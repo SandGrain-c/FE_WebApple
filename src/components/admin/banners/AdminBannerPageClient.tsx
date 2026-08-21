@@ -18,6 +18,12 @@ import {
   getAdminBanners,
   updateAdminBanner,
 } from "@/services/admin-banner.service";
+import {
+  BANNER_POSITIONS,
+  DEFAULT_BANNER_POSITION,
+  getBannerFormPositionOptions,
+  getBannerPositionLabel,
+} from "@/config/banner";
 import { useAdminAuthStore } from "@/store/admin-auth.store";
 import type {
   AdminBanner,
@@ -49,34 +55,11 @@ type BannerToast = {
   description?: string;
 };
 
-const BANNER_POSITION_OPTIONS = [
-  {
-    label: "Home Hero",
-    value: "home-hero",
-  },
-  {
-    label: "Home Sale",
-    value: "home-sale",
-  },
-  {
-    label: "Category Hero",
-    value: "category-hero",
-  },
-  {
-    label: "Category Top",
-    value: "category-top",
-  },
-  {
-    label: "Shop Hero",
-    value: "shop-hero",
-  },
-];
-
 function getEmptyFormState(): BannerFormState {
   return {
     title: "",
     targetUrl: "",
-    position: "home-hero",
+    position: DEFAULT_BANNER_POSITION,
     isActive: true,
   };
 }
@@ -85,7 +68,7 @@ function mapBannerToFormState(banner: AdminBanner): BannerFormState {
   return {
     title: banner.title || "",
     targetUrl: banner.targetUrl || "",
-    position: banner.position || "home-hero",
+    position: banner.position || "",
     isActive: banner.isActive,
   };
 }
@@ -240,6 +223,7 @@ function BannerFormModal({
       : `Đang sửa banner #${editingBanner?.bannerId || ""}`;
 
   const currentImageUrl = previewUrl || editingBanner?.imageUrl || null;
+  const formPositionOptions = getBannerFormPositionOptions(formState.position);
 
   return (
     <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/40 px-4 py-6">
@@ -400,10 +384,8 @@ function BannerFormModal({
                 Vị trí hiển thị <span className="text-red-500">*</span>
               </label>
 
-              <input
+              <select
                 id="bannerPosition"
-                type="text"
-                list="banner-position-options"
                 value={formState.position}
                 onChange={(event) =>
                   onChange({
@@ -412,21 +394,24 @@ function BannerFormModal({
                   })
                 }
                 disabled={isSubmitting}
-                placeholder="home-hero"
                 className={`h-12 w-full rounded-2xl border bg-surface-container-lowest px-4 text-sm outline-none transition focus:bg-white focus:ring-4 ${
                   errors.position
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                     : "border-surface-container-high focus:border-primary focus:ring-primary/10"
                 }`}
-              />
+              >
+                {formState.position ? null : (
+                  <option value="" disabled>
+                    Chọn vị trí hiển thị
+                  </option>
+                )}
 
-              <datalist id="banner-position-options">
-                {BANNER_POSITION_OPTIONS.map((item) => (
+                {formPositionOptions.map((item) => (
                   <option key={item.value} value={item.value}>
                     {item.label}
                   </option>
                 ))}
-              </datalist>
+              </select>
 
               {errors.position ? (
                 <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-600">
@@ -437,7 +422,8 @@ function BannerFormModal({
                 </p>
               ) : (
                 <p className="mt-1.5 text-xs text-secondary">
-                  Ví dụ: home-hero, home-sale, category-hero.
+                  Key API được giữ cố định theo placement đang hiển thị ở
+                  Customer.
                 </p>
               )}
             </div>
@@ -649,7 +635,7 @@ export default function AdminBannerPageClient() {
       }
     });
 
-    BANNER_POSITION_OPTIONS.forEach((item) => {
+    BANNER_POSITIONS.forEach((item) => {
       positions.add(item.value);
     });
 
@@ -916,9 +902,8 @@ export default function AdminBannerPageClient() {
             </h2>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-secondary">
-              Quản lý banner hiển thị ở Home, Category hoặc các khu vực bán
-              hàng. Banner active sẽ được API public trả về cho giao diện khách
-              hàng.
+              Quản lý banner chính và banner nhỏ đang hiển thị trên trang chủ.
+              Banner active sẽ được API public trả về cho giao diện khách hàng.
             </p>
           </div>
 
@@ -973,7 +958,7 @@ export default function AdminBannerPageClient() {
 
             {positionOptions.map((position) => (
               <option key={position} value={position}>
-                {position}
+                {getBannerPositionLabel(position)}
               </option>
             ))}
           </select>

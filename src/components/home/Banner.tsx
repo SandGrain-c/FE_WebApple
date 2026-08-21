@@ -6,11 +6,9 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { BANNER_POSITION_KEYS } from "@/config/banner";
 import { getPublicBanners } from "@/services/banner.service";
 import type { BannerDto } from "@/types/banner.type";
-
-const HERO_POSITION = "home-hero";
-const SMALL_POSITION = "home-small";
 
 type SmallBannerPair = {
   id: string;
@@ -128,8 +126,8 @@ export default function Banner() {
         setErrorMessage(null);
 
         const [heroBanners, smallBannerItems] = await Promise.all([
-          getPublicBanners(HERO_POSITION),
-          getPublicBanners(SMALL_POSITION),
+          getPublicBanners(BANNER_POSITION_KEYS.HOME_HERO),
+          getPublicBanners(BANNER_POSITION_KEYS.HOME_SMALL),
         ]);
 
         if (!isMounted) return;
