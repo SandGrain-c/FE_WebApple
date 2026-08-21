@@ -302,16 +302,10 @@ export default function LoginPageClient() {
     );
   }
 
-  function handleForgotPassword() {
-    showToast(
-      "info",
-      "Quên mật khẩu",
-      "Chức năng quên mật khẩu sẽ được bổ sung ở giai đoạn sau."
-    );
-  }
-
   const identifierError = touched.identifier ? errors.identifier : undefined;
   const passwordError = touched.password ? errors.password : undefined;
+  const passwordResetSucceeded =
+    searchParams.get("passwordReset") === "success";
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-[#f6f6f7]">
@@ -385,6 +379,18 @@ export default function LoginPageClient() {
                 </p>
               </div>
 
+              {passwordResetSucceeded ? (
+                <div
+                  role="status"
+                  className="mt-4 flex items-start gap-2 rounded-2xl border border-green-200 bg-green-50 p-3 text-sm text-green-700"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    check_circle
+                  </span>
+                  <span>Mật khẩu đã được đặt lại. Vui lòng đăng nhập.</span>
+                </div>
+              ) : null}
+
               <form onSubmit={handleSubmit} className="mt-5 space-y-3">
                 <div>
                   <label
@@ -454,13 +460,12 @@ export default function LoginPageClient() {
                       Mật khẩu
                     </label>
 
-                    <button
-                      type="button"
-                      onClick={handleForgotPassword}
+                    <Link
+                      href="/forgot-password"
                       className="text-sm font-semibold text-primary transition hover:opacity-80"
                     >
                       Quên mật khẩu?
-                    </button>
+                    </Link>
                   </div>
 
                   <div

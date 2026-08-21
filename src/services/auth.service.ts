@@ -1,11 +1,14 @@
 import type {
   ApiResponse,
+  AuthMessageResponse,
+  ForgotPasswordPayload,
   GetMeResponseData,
   LoginPayload,
   LoginResponseData,
   LogoutResponseData,
   RegisterPayload,
   RegisterResponseData,
+  ResetPasswordPayload,
 } from "@/types/auth.type";
 
 const API_BASE_URL =
@@ -13,6 +16,18 @@ const API_BASE_URL =
 
 async function parseApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
   const data = (await response.json()) as ApiResponse<T>;
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || "Có lỗi xảy ra. Vui lòng thử lại.");
+  }
+
+  return data;
+}
+
+async function parseAuthMessageResponse(
+  response: Response
+): Promise<AuthMessageResponse> {
+  const data = (await response.json()) as AuthMessageResponse;
 
   if (!response.ok || !data.success) {
     throw new Error(data.message || "Có lỗi xảy ra. Vui lòng thử lại.");
@@ -49,6 +64,34 @@ export async function login(payload: LoginPayload): Promise<LoginResponseData> {
   const result = await parseApiResponse<LoginResponseData>(response);
 
   return result.data;
+}
+
+export async function forgotPassword(
+  payload: ForgotPasswordPayload
+): Promise<AuthMessageResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return parseAuthMessageResponse(response);
+}
+
+export async function resetPassword(
+  payload: ResetPasswordPayload
+): Promise<AuthMessageResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return parseAuthMessageResponse(response);
 }
 
 export async function getMe(

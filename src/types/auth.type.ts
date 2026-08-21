@@ -20,6 +20,16 @@ export type LoginPayload = {
   password: string;
 };
 
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
 export type RegisterPayload = {
   userName: string;
   fullName: string;
@@ -43,6 +53,11 @@ export type GetMeResponseData = {
 };
 
 export type LogoutResponseData = null;
+
+export type AuthMessageResponse = {
+  success: boolean;
+  message: string;
+};
 
 export type ApiResponse<T> = {
   success: boolean;
