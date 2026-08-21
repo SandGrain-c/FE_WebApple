@@ -5,12 +5,8 @@ import Link from "next/link";
 import HeaderCartBadge from "@/components/cart/HeaderCartBadge";
 import HeaderAuthMenu from "@/components/auth/HeaderAuthMenu";
 import HeaderSearchBox from "@/components/layout/HeaderSearchBox";
+import { MAIN_CATEGORIES } from "@/config/navigation";
 type HeaderCategoryItem = {
-  label: string;
-  href: string;
-};
-
-type HeaderNavItem = {
   label: string;
   href: string;
 };
@@ -36,41 +32,6 @@ export default function Header() {
     {
       label: "Lắp đặt tận nơi",
       href: "/lap-dat-tan-noi",
-    },
-  ];
-
-  const navItems: HeaderNavItem[] = [
-    {
-      label: "iPhone",
-      href: "/iphone",
-    },
-    {
-      label: "MacBook",
-      href: "/macbook",
-    },
-    {
-      label: "iPad",
-      href: "/ipad",
-    },
-    {
-      label: "Apple Watch",
-      href: "/apple-watch",
-    },
-    {
-      label: "Camera",
-      href: "/camera",
-    },
-    {
-      label: "Âm thanh",
-      href: "/am-thanh",
-    },
-    {
-      label: "iMac",
-      href: "/imac",
-    },
-    {
-      label: "Phụ kiện",
-      href: "/phu-kien",
     },
   ];
 
@@ -155,13 +116,13 @@ export default function Header() {
           {/* Navigation */}
           <nav className="flex flex-1 items-center overflow-x-auto">
             <div className="flex w-full items-center justify-between">
-              {navItems.map((item) => (
+              {MAIN_CATEGORIES.map((category) => (
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  key={category.slug}
+                  href={`/${category.slug}`}
                   className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-[#FF1A3D]"
                 >
-                  {item.label}
+                  {category.name}
                 </Link>
               ))}
             </div>

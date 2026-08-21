@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:unit": "node --test --experimental-strip-types tests/*.test.mjs",
     "test:e2e:smoke": "playwright test e2e/smoke",
     "test:e2e:headed": "playwright test e2e/smoke --headed",
     "test:e2e:report": "playwright show-report"
