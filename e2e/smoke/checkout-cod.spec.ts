@@ -7,6 +7,8 @@ import {
 } from "../support/database";
 import { addSeedProductToCart } from "../support/shop";
 
+test.describe.configure({ timeout: 90_000 });
+
 test.afterEach(() => {
   resetE2EDatabase();
 });
@@ -21,6 +23,18 @@ test("E2E-USR-004 — Checkout COD", async ({ page }) => {
     page.getByText(/E2E Customer - 0901000001/),
   ).toBeVisible();
   await page.getByPlaceholder("Ví dụ: SALE10").fill(E2E.voucherCode);
+  const validateResponsePromise = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/vouchers/validate") &&
+      response.request().method() === "POST",
+  );
+  await page
+    .getByRole("button", { name: "Áp dụng", exact: true })
+    .click();
+  expect((await validateResponsePromise).ok()).toBeTruthy();
+  await expect(
+    page.getByText(`Voucher ${E2E.voucherCode} đã áp dụng`),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: /Thanh toán khi nhận hàng/ })
     .click();
