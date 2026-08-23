@@ -1,20 +1,19 @@
 import type { CartItem } from "@/types/cart.type";
+import { formatPrice } from "@/utils/format-price";
 
 type CheckoutSummaryProps = {
   items: CartItem[];
   subTotal: number;
   shippingFee: number;
+  discountAmount: number;
   totalAmount: number;
 };
-
-function formatPrice(price: number) {
-  return `${price.toLocaleString("vi-VN")}₫`;
-}
 
 export default function CheckoutSummary({
   items,
   subTotal,
   shippingFee,
+  discountAmount,
   totalAmount,
 }: CheckoutSummaryProps) {
   return (
@@ -68,6 +67,15 @@ export default function CheckoutSummary({
             {formatPrice(shippingFee)}
           </span>
         </div>
+
+        {discountAmount > 0 ? (
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-secondary">Giảm voucher</span>
+            <span className="font-semibold text-green-700">
+              -{formatPrice(discountAmount)}
+            </span>
+          </div>
+        ) : null}
 
         <div className="flex items-center justify-between gap-4 border-t border-outline-variant pt-3">
           <span className="font-semibold text-on-surface">Tổng thanh toán</span>
