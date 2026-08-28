@@ -4,9 +4,10 @@ import "swiper/css/navigation";
 import "./globals.css";
 import ToastContainer from "@/components/ui/ToastContainer";
 import AppLoadingOverlay from "@/components/common/loading/AppLoadingOverlay";
+import { SITE_CONFIG } from "@/config/site";
 export const metadata: Metadata = {
-  title: "Đức Bách Hoá",
-  description: "Chuyên sản phẩm Apple chính hãng",
+  title: SITE_CONFIG.name,
+  description: SITE_CONFIG.description,
 };
 
 export default function RootLayout({

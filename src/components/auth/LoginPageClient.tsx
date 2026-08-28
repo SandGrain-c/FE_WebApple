@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+import { SITE_CONFIG } from "@/config/site";
 import { useAuthStore } from "@/store/auth.store";
 import { useCartStore } from "@/store/cart.store";
 
@@ -333,13 +334,13 @@ export default function LoginPageClient() {
                 <span className="material-symbols-outlined text-lg">
                   storefront
                 </span>
-                Đức Bách Hoá
+                {SITE_CONFIG.name}
               </div>
             </div>
 
             <div className="relative z-10 flex flex-1 items-center">
               <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-on-surface xl:text-5xl 2xl:text-6xl">
-                Đăng nhập thành viên Đức Bách Hoá
+                Đăng nhập thành viên {SITE_CONFIG.name}
               </h1>
             </div>
           </div>
@@ -367,7 +368,7 @@ export default function LoginPageClient() {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-primary">
-                  Đức Bách Hoá Member
+                  {SITE_CONFIG.name} Member
                 </p>
 
                 <h2 className="mt-1 text-2xl font-bold text-on-surface">

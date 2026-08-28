@@ -1,11 +1,13 @@
 import Link from "next/link";
 
+import { SITE_CONFIG } from "@/config/site";
+
 export default function Footer(){
     return(
         <footer className="bg-[#F5F5F7] dark:bg-zinc-900 w-[80%] mx-auto mt-20 border-t border-gray-200 dark:border-zinc-800">
             <div className="max-w-[1400px] w-[80%] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 ">
                 <div>
-                    <span className="text-lg font-bold text-black dark:text-white block mb-6">Đức Bách Hoá</span>
+                    <span className="text-lg font-bold text-black dark:text-white block mb-6">{SITE_CONFIG.name}</span>
                     <p className="text-sm font-normal leading-relaxed text-gray-500 dark:text-zinc-400 mb-6">Chuyên cung cấp các sản phẩm Apple chính hãng với giá tốt nhất thị trường và dịch vụ bảo hành chuyên nghiệp</p>
                     <div className="flex gap-4">
                         <span className="material-symbols-outlined text-gray-400 cursor-pointer hover:text-[#E60026]">social_leaderboard</span>
@@ -35,12 +37,12 @@ export default function Footer(){
                     <h4 className="font-bold text-black dark:text-white mb-6 uppercase text-xs tracking-widest">Liên hệ</h4>
                     <ul className="space-y-3">
                         <li className="text-sm text-gray-500 dark:text-zinc-400">Hotline: 1900 1234</li>
-                        <li className="text-sm text-gray-500 dark:text-zinc-400">Email: hotro@ducbachhoa.vn</li>
+                        <li className="text-sm text-gray-500 dark:text-zinc-400">Email: {SITE_CONFIG.supportEmail}</li>
                         <li className="text-sm text-gray-500 dark:text-zinc-400">209 Hồ Tùng Mậu, Phường Cầu Diễn, Hà Nội</li>
                     </ul>
                 </div>
                 <div className="max-w-[1200px] mx-auto px-8 py-8 border-t border-gray-200 dark:border-zinc-800">
-                    <p className="text-sm text-gray-400 dark:text-zinc-500 text-center">© 2024 Đức Bách Hoá. Premium E-commerce. Crafted for Excellence.</p>
+                    <p className="text-sm text-gray-400 dark:text-zinc-500 text-center">© 2024 {SITE_CONFIG.name}. Premium E-commerce. Crafted for Excellence.</p>
                 </div> 
             </div>
         </footer>

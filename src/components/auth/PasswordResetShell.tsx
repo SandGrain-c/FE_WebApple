@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { SITE_CONFIG } from "@/config/site";
+
 type PasswordResetShellProps = {
   icon: string;
   eyebrow: string;
@@ -36,7 +38,7 @@ export default function PasswordResetShell({
               <span className="material-symbols-outlined text-3xl">{icon}</span>
             </div>
             <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-on-surface">
-              Bảo vệ tài khoản WebApple của bạn
+              Bảo vệ tài khoản {SITE_CONFIG.name} của bạn
             </h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-secondary">
               Liên kết đặt lại mật khẩu có thời hạn ngắn và chỉ sử dụng được

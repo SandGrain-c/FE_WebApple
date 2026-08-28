@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+import { SITE_CONFIG } from "@/config/site";
 import { useAdminAuthStore } from "@/store/admin-auth.store";
 
 function getSafeAdminRedirectPath(redirect: string | null) {
@@ -345,7 +346,7 @@ export default function AdminLoginPageClient() {
                   <span className="material-symbols-outlined text-lg">
                     verified_user
                   </span>
-                  Quản trị hệ thống Đức Bách Hoá
+                  Quản trị hệ thống {SITE_CONFIG.name}
                 </p>
 
                 <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-on-surface xl:text-5xl 2xl:text-6xl">
@@ -378,7 +379,7 @@ export default function AdminLoginPageClient() {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-primary">
-                  Đức Bách Hoá Admin
+                  {SITE_CONFIG.name} Admin
                 </p>
 
                 <h2 className="mt-1 text-2xl font-bold text-on-surface">

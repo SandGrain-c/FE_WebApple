@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import ProductDetailClient from "@/components/product/detail/ProductDetailClient";
 import { getProductDetail } from "@/services/product.service";
 import ProductJsonLd from "@/components/product/detail/ProductJsonLd";
+import { SITE_CONFIG } from "@/config/site";
 
 type ProductDetailPageProps = {
   params: Promise<{
@@ -12,7 +13,6 @@ type ProductDetailPageProps = {
   }>;
 };
 
-const SITE_NAME = "Đức Bách Hoá";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   if (!productDetailResponse?.product) {
     return {
-      title: `Không tìm thấy sản phẩm | ${SITE_NAME}`,
+      title: `Không tìm thấy sản phẩm | ${SITE_CONFIG.name}`,
       description:
         "Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã ngừng kinh doanh.",
       robots: {
@@ -41,12 +41,12 @@ export async function generateMetadata({
 
   const product = productDetailResponse.product;
 
-  const title = `${product.name} giá ${formatPrice(product.price)} | ${SITE_NAME}`;
+  const title = `${product.name} giá ${formatPrice(product.price)} | ${SITE_CONFIG.name}`;
 
   const description =
     product.shortDescription ||
     product.description ||
-    `Mua ${product.name} chính hãng tại ${SITE_NAME}. Giá ${formatPrice(
+    `Mua ${product.name} chính hãng tại ${SITE_CONFIG.name}. Giá ${formatPrice(
       product.price
     )}, nhiều ưu đãi, hỗ trợ tư vấn và giao hàng nhanh.`;
 
@@ -67,7 +67,7 @@ export async function generateMetadata({
       title,
       description,
       url: productUrl,
-      siteName: SITE_NAME,
+      siteName: SITE_CONFIG.name,
       type: "website",
       images: [
         {

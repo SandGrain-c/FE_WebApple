@@ -4,6 +4,7 @@ import type {
   ServiceFeatureSection,
   ServicePageContent,
 } from "@/config/service-pages";
+import { SITE_CONFIG } from "@/config/site";
 
 type ServiceInformationPageProps = {
   content: ServicePageContent;
@@ -235,7 +236,7 @@ export default function ServiceInformationPage({
           className="rounded-3xl border border-outline-variant/40 bg-surface-container-lowest px-6 py-9 text-center shadow-lg sm:px-10"
         >
           <p className="text-label-sm font-bold uppercase tracking-[0.18em] text-primary">
-            Đức Bách Hoá
+            {SITE_CONFIG.name}
           </p>
           <h2
             id="support-cta-heading"
