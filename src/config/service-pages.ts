@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from "@/config/site";
+
 export type ServiceFeatureItem = {
   title: string;
   description?: string;
@@ -41,7 +43,7 @@ export const SERVICE_PAGES = {
     navLabel: "Dịch vụ sửa chữa",
     title: "Dịch vụ sửa chữa",
     metadataDescription:
-      "Thông tin kiểm tra, tư vấn và hỗ trợ xử lý các vấn đề thường gặp trên thiết bị Apple tại Đức Bách Hoá.",
+      `Thông tin kiểm tra, tư vấn và hỗ trợ xử lý các vấn đề thường gặp trên thiết bị Apple tại ${SITE_CONFIG.name}.`,
     heroIcon: "build",
     heroDescription:
       "Kiểm tra, tư vấn và hỗ trợ xử lý các vấn đề thường gặp trên thiết bị Apple.",
@@ -166,7 +168,7 @@ export const SERVICE_PAGES = {
     navLabel: "Bảo hành chính hãng",
     title: "Bảo hành chính hãng",
     metadataDescription:
-      "Hướng dẫn chuẩn bị thông tin và kiểm tra điều kiện bảo hành sản phẩm tại Đức Bách Hoá.",
+      `Hướng dẫn chuẩn bị thông tin và kiểm tra điều kiện bảo hành sản phẩm tại ${SITE_CONFIG.name}.`,
     heroIcon: "verified_user",
     heroDescription:
       "Hướng dẫn chuẩn bị thông tin và kiểm tra điều kiện bảo hành phù hợp cho sản phẩm.",
@@ -240,7 +242,7 @@ export const SERVICE_PAGES = {
     navLabel: "Thu cũ đổi mới",
     title: "Thu cũ đổi mới",
     metadataDescription:
-      "Thông tin quy trình kiểm tra thiết bị cũ và nâng cấp sản phẩm tại Đức Bách Hoá.",
+      `Thông tin quy trình kiểm tra thiết bị cũ và nâng cấp sản phẩm tại ${SITE_CONFIG.name}.`,
     heroIcon: "published_with_changes",
     heroDescription:
       "Đổi thiết bị cũ và nâng cấp lên sản phẩm phù hợp hơn. Giá thu phụ thuộc tình trạng thực tế của thiết bị.",
@@ -337,7 +339,7 @@ export const SERVICE_PAGES = {
     navLabel: "Trả góp 0%",
     title: "Trả góp 0%",
     metadataDescription:
-      "Thông tin tham khảo về lựa chọn thanh toán trả góp và điều kiện áp dụng tại Đức Bách Hoá.",
+      `Thông tin tham khảo về lựa chọn thanh toán trả góp và điều kiện áp dụng tại ${SITE_CONFIG.name}.`,
     heroIcon: "payments",
     heroDescription:
       "Các lựa chọn thanh toán trả góp giúp chia nhỏ chi phí mua sản phẩm. Điều kiện áp dụng phụ thuộc chương trình và phương thức thanh toán tại thời điểm mua.",
@@ -415,7 +417,7 @@ export const SERVICE_PAGES = {
     navLabel: "Lắp đặt tận nơi",
     title: "Lắp đặt tận nơi",
     metadataDescription:
-      "Thông tin giao, lắp đặt và thiết lập cơ bản cho một số sản phẩm phù hợp tại Đức Bách Hoá.",
+      `Thông tin giao, lắp đặt và thiết lập cơ bản cho một số sản phẩm phù hợp tại ${SITE_CONFIG.name}.`,
     heroIcon: "home_repair_service",
     heroDescription:
       "Hỗ trợ giao và lắp đặt một số sản phẩm phù hợp tại địa chỉ khách hàng.",

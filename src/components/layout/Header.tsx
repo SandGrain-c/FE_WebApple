@@ -7,6 +7,7 @@ import HeaderAuthMenu from "@/components/auth/HeaderAuthMenu";
 import HeaderSearchBox from "@/components/layout/HeaderSearchBox";
 import ServiceCategoryMenu from "@/components/layout/ServiceCategoryMenu";
 import { MAIN_CATEGORIES } from "@/config/navigation";
+import { SITE_CONFIG } from "@/config/site";
 
 export default function Header() {
   return (
@@ -34,7 +35,7 @@ export default function Header() {
             </span>
 
             <span className="inline-block whitespace-nowrap text-lg font-bold tracking-tighter text-[#FF1A3D] transition-transform duration-300 ease-in-out group-hover:scale-110 active:scale-95 md:text-2xl">
-              Đức Bách Hoá
+              {SITE_CONFIG.name}
             </span>
           </Link>
         </div>

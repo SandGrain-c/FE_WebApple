@@ -1,10 +1,10 @@
 import type { ProductDetail } from "@/types/product-detail.type";
+import { SITE_CONFIG } from "@/config/site";
 
 type ProductJsonLdProps = {
   product: ProductDetail;
 };
 
-const SITE_NAME = "Đức Bách Hoá";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -25,7 +25,7 @@ function getDescription(product: ProductDetail) {
   return (
     product.shortDescription ||
     product.description ||
-    `Mua ${product.name} chính hãng tại ${SITE_NAME}.`
+    `Mua ${product.name} chính hãng tại ${SITE_CONFIG.name}.`
   );
 }
 
@@ -101,7 +101,7 @@ export default function ProductJsonLd({ product }: ProductJsonLdProps) {
       itemCondition: "https://schema.org/NewCondition",
       seller: {
         "@type": "Organization",
-        name: SITE_NAME,
+        name: SITE_CONFIG.name,
       },
     },
   };

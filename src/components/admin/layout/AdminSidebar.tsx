@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import AdminNotificationBadge from "@/components/admin/notifications/AdminNotificationBadge";
+import { SITE_CONFIG } from "@/config/site";
 import { useAdminAuthStore } from "@/store/admin-auth.store";
 import { useAdminNotificationStore } from "@/store/admin-notification.store";
 import type { AdminNotificationSummary } from "@/types/admin-notification.type";
@@ -190,7 +191,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
             <div>
               <p className="text-sm font-bold leading-5 text-on-surface">
-                Đức Bách Hoá
+                {SITE_CONFIG.name}
               </p>
               <p className="text-xs font-medium text-secondary">
                 Admin Panel
